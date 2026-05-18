@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 // constexpr: evaluated at compile time — these will never change at runtime
@@ -25,10 +27,14 @@ void        viewTransactions(const std::vector<Transaction>& transactions);
 double      calculateBalance(const std::vector<Transaction>& transactions);
 void        displayBalance(const std::vector<Transaction>& transactions);
 void        printDivider();
+void		saveTransactions(const std::vector<Transaction>& transactions);
+void		loadTransactions(std::vector<Transaction>& transactions);
 
 // ─── Main Entry Point ──────────────────────────────────────────────────────
 int main() {
     std::vector<Transaction> transactions;
+
+    loadTransactions(transactions);
 
 	std::cout << "------------------------------------\n";
 	std::cout << "|      CLI FINANCE TRACKER          |\n";
@@ -60,6 +66,7 @@ int main() {
                 displayBalance(transactions);
                 break;
             case 5:
+            	saveTransactions(transactions);
                 std::cout << "\nGoodbye. Stay on budget.\n";
                 return 0;
             default:
@@ -81,7 +88,7 @@ void displayMenu() {
     std::cout << "  2. Add Expense\n";
     std::cout << "  3. View Transactions\n";
     std::cout << "  4. View Balance\n";
-    std::cout << "  5. Quit\n";
+    std::cout << "  5. Save and quit\n";
     printDivider();
 }
 
@@ -173,8 +180,66 @@ void displayBalance(const std::vector<Transaction>& transactions) {
     } else if (balance == 0.0) {
         std::cout << "  You are at break-even.\n";
     } else {
-        std::cout << "  You are in the green.\n";
+        std::cout << "  You are in the black.\n";
     }
 
     printDivider();
+}
+
+void saveTransactions(const std::vector<Transaction>& transactions) {
+	std::ofstream file("transactions.csv");
+
+	if(!file.is_open()) {
+		std::cerr << "Error opening file.\n";
+		printDivider();
+		return;
+	}
+
+	if(transactions.empty()) {
+		std::cerr << "No transactions to save.\n";
+		printDivider();
+		return;
+	}
+
+	for(const auto& t : transactions) {
+		file << t.description << "," << std::fixed << std::setprecision(2) << t.amount << "," << t.category << "\n";
+	}
+
+	file.close();
+	std::cout << "  Successfully saved transactions to [transactions.csv]\n";
+	printDivider();
+}
+
+void loadTransactions(std::vector<Transaction>& transactions) {
+	std::ifstream file("transactions.csv");
+
+	if(!file.is_open()) {
+		return;
+	}
+
+	std::string line;
+
+	while(std::getline(file, line)) {
+		Transaction t;
+		std::stringstream ss(line);
+		std::string field;
+
+		std::getline(ss, field, ',');
+		t.description = field;
+
+		std::getline(ss, field, ',');
+		try {
+			t.amount = std::stod(field);
+		}
+		catch(const std::invalid_argument& iae) {
+			std::cerr << "Error reading field from file. " << iae.what() << "\n";
+			continue;
+		}
+
+		std::getline(ss, field, ',');
+		t.category = field;
+
+		transactions.push_back(t);
+	}
+	file.close();
 }
