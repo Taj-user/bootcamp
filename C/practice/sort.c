@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+// Creating a struct
+typedef struct Person {
+	char name[50];
+	int age;
+} Person;
+
 // Helper Functions
 static char* get_element(void* base, size_t index, size_t elem_size) { return (char*)base + (index * elem_size); }
 static void swap_element(void* base, size_t a, size_t b, size_t elem_size) {
@@ -9,7 +15,7 @@ static void swap_element(void* base, size_t a, size_t b, size_t elem_size) {
 
 	if(i == j){ return; }
 
-	for(int k = 0; k < elem_size; k++) {
+	for(size_t k = 0; k < elem_size; k++) {
 		char temp = *(i + k);
 		*(i + k) = *(j + k);
 		*(j + k) = temp;
@@ -74,6 +80,16 @@ int compare_string_desc(const void* a, const void* b) {
 	return strcmp(sb, sa);
 }
 
+int compare_struct_asc(const void* a, const void* b) {
+	return ((const Person*)a)->age - ((const Person*)b)->age;
+}
+
+int compare_struct_desc(const void* a, const void* b) {
+	return ((const Person*)b)->age - ((const Person*)a)->age;
+}
+
+// TODO: Write sorting for string field in Person struct
+
 // qsort from scratch
 void my_qsort(void* array, size_t n, size_t elem_size, int (*comparator)(const void*, const void*)) {
 	while(n > 1) {
@@ -99,14 +115,16 @@ void my_qsort(void* array, size_t n, size_t elem_size, int (*comparator)(const v
 	}
 }
 
-int main() {
+int main(void) {
 	// Testing
-	char* arr[] = { "bread", "butter", "rice"};
+	Person persons[] = { {"Bread", 12}, {"Taj", 19}, {"Ryan", 23}, {"John Brown", 99} };
 
-	my_qsort(arr, 3, sizeof(char*), compare_string_desc);
+	size_t size = sizeof(persons) / sizeof(persons[0]);
 
-	for(size_t i = 0; i < 3; i++) {
-		printf("%s ", arr[i]);
+	my_qsort(persons, size, sizeof(Person), compare_struct_asc);
+
+	for(size_t i = 0; i < size; i++) {
+		printf("%s\t%d\n", persons[i].name, persons[i].age);
 	}
 	printf("\n");
 
