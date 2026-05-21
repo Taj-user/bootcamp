@@ -5,8 +5,10 @@
 
 class BankAccount {
 	int accountNumber_;
-	double balance_;
 	std::string ownerName_;
+
+	protected:
+		double balance_;
 
 	public:
 		BankAccount(int accountNumber, double balance, const std::string& ownerName);
@@ -15,9 +17,10 @@ class BankAccount {
 		bool operator==(const BankAccount& other) const;
 		friend std::ostream& operator<<(std::ostream& os, const BankAccount& account);
 		void deposit(double amount);
-		void withdraw(double amount);
+		virtual void withdraw(double amount);
+		virtual void printStatement() const;
 		double getBalance() const;
 		int getAccountNumber() const;
 		std::string getOwnerName() const;
-		~BankAccount();
+		virtual ~BankAccount();
 };

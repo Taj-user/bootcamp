@@ -60,6 +60,14 @@ void BankAccount::withdraw(double amount) {
 	else { balance_ -= amount; }
 }
 
+// Print statement method
+void BankAccount::printStatement() const {
+	std::cout << "Statements:\n";
+	std::cout << "Account Name: " << ownerName_ << "\n";
+	std::cout << "Account Number: " << accountNumber_ << "\n";
+	std::cout << "Account balance: " << balance_ << "\n";
+}
+
 // Getter methods
 double BankAccount::getBalance() const { return balance_; }
 int BankAccount::getAccountNumber() const { return accountNumber_; }
