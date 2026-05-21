@@ -32,4 +32,4 @@ void BankAccount::printStatement() const {
 	std::cout << "Account Balance: " << balance_ << "\n";
 }
 
-BankAccount::~BankAccount() { std::cout << "Destructor called.\n"; }
+BankAccount::~BankAccount() { std::cout << "Destructor called for account: " << accountNumber_ << "\n"; }
