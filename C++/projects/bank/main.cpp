@@ -5,21 +5,31 @@
 int main() {
 	// Test Account creation, deposit, withdraw, etc.
 	try {
-		BankAccount b1(100000, 14000, "John");
-		BankAccount b2(100001, 9999999, "Taj");
-		BankAccount b3(100002, 1, "Bread");
+		BankAccount a(1000, 1234567, "John");
+		BankAccount b(a);
+		BankAccount c(1002, 1111, "Bread");
 
-		b1.deposit(339.23);
-		b2.deposit(-23);
-		b3.deposit(1);
+		b.deposit(3300);
+		std::cout << a;
+		std::cout << "\n";
+		std::cout << b;
+		std::cout << "\n";
 
-		b1.withdraw(1);
-		b2.withdraw(40000);
-		b3.withdraw(100);
+		a = b;
+		std::cout << a;
+		std::cout << "\n";
 
-		b1.printStatement();
-		b2.printStatement();
-		b3.printStatement();
+		bool sameAccount = a == b;
+		bool diffAccount = a == c;
+		std::cout << sameAccount << "\n";
+		std::cout << diffAccount << "\n";
+
+		std::cout << a;
+		std::cout << "\n";
+		std::cout << b;
+		std::cout << "\n";
+		std::cout << c;
+		std::cout << "\n";
 	}
 	catch(const std::invalid_argument& iae) { std::cout << "Error: " << iae.what() << "\n"; }
 	

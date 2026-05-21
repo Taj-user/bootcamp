@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <iomanip>
 #include "BankAccount.h"
 
 // Bank Account Constructor
@@ -41,7 +42,7 @@ std::ostream& operator<<(std::ostream& os, const BankAccount& account) {
 	os << "Statements:\n";
 	os << "Account Name: " << account.ownerName_ << "\n";
 	os << "Account Number: " << account.accountNumber_ << "\n";
-	os << "Account Balance: " << account.balance_ << "\n";
+	os << "Account Balance: " << std::fixed << std::setprecision(2) << account.balance_ << "\n";
 
 	return os;
 }
