@@ -1,6 +1,6 @@
 #include <iostream>
-#include <string>
 #include <stdexcept>
+#include <iomanip>
 #include "SavingsAccount.h"
 
 // Savings Account Constructor
@@ -15,12 +15,13 @@ SavingsAccount::SavingsAccount(int accountNumber, double balance, const std::str
 void SavingsAccount::applyInterest() { balance_ *= (1 + interestRate_); }
 
 // Override print statement method
-void SavingsAccount::printStatement() const override {
+void SavingsAccount::printStatement() const {
+	std::cout << std::fixed << std::setprecision(2);
 	std::cout << "Statements:\n";
-	std::cout << "Account Name: " << ownerName_ << "\n";
-	std::cout << "Account Number: " << accountNumber_ << "\n";
+	std::cout << "Account Name: " << getOwnerName() << "\n";
+	std::cout << "Account Number: " << getAccountNumber() << "\n";
 	std::cout << "Account balance: " << balance_ << "\n";
-	std::cout << "Account interest rate: " << interestRate_ << "\n";
+	std::cout << "Account interest rate: " << std::fixed << std::setprecision(4) << interestRate_ << "\n";
 }
 
-SavingsAccount::~SavingsAccount() { std::cout << "Destructor called for savings account: " << accountNumber_ << "\n"; }
+SavingsAccount::~SavingsAccount() { std::cout << "Destructor called for savings account: " << getAccountNumber() << "\n"; }
