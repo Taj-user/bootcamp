@@ -12,26 +12,6 @@ BankAccount::BankAccount(int accountNumber, double balance, const std::string& o
 	if(balance < 0.0) { throw std::invalid_argument("Initial balance cannot be negative"); }
 }
 
-// Bank Account Copy Constructor
-BankAccount::BankAccount(const BankAccount& other)
-	: accountNumber_ (other.accountNumber_)
-	, ownerName_ (other.ownerName_)
-	  , balance_ (other.balance_)
-{}
-
-// Bank Account Copy Assignment Operator method
-BankAccount& BankAccount::operator=(const BankAccount& other) {
-	// Check for self assignment
-	if(this == &other){ return *this; }
-
-	// Copy from other
-	accountNumber_ = other.accountNumber_;
-	ownerName_ = other.ownerName_;
-	balance_ = other.balance_;
-	
-	return *this;
-}
-
 // Bank Account Equality Operator method
 bool BankAccount::operator==(const BankAccount& other) const {
 	return accountNumber_ == other.accountNumber_;
@@ -63,7 +43,7 @@ void BankAccount::withdraw(double amount) {
 // Print statement method
 void BankAccount::printStatement() const {
 	std::cout << std::fixed << std::setprecision(2);
-	std::cout << "Statements:\n";
+	std::cout << "\nStatements:\n";
 	std::cout << "Account Name: " << ownerName_ << "\n";
 	std::cout << "Account Number: " << accountNumber_ << "\n";
 	std::cout << "Account balance: " << balance_ << "\n";
