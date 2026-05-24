@@ -3,8 +3,8 @@
 #include "CheckingAccount.h"
 
 // Checking Account Constructor
-CheckingAccount::CheckingAccount(int accountNumber, double balance, const std::string& ownerName, double overdraftLimit)
-	: BankAccount(accountNumber, balance, ownerName)
+CheckingAccount::CheckingAccount(double balance, const std::string& ownerName, double overdraftLimit)
+	: BankAccount(balance, ownerName)
 	, overdraftLimit_ (overdraftLimit)
 {
 	if(overdraftLimit < 0.0) { throw std::invalid_argument("Overdraft limit cannot be negative."); }

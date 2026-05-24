@@ -4,8 +4,8 @@
 #include "SavingsAccount.h"
 
 // Savings Account Constructor
-SavingsAccount::SavingsAccount(int accountNumber, double balance, const std::string& ownerName, double interestRate)
-	: BankAccount(accountNumber, balance, ownerName)
+SavingsAccount::SavingsAccount(double balance, const std::string& ownerName, double interestRate)
+	: BankAccount(balance, ownerName)
 	, interestRate_ (interestRate)
 {
 	if(interestRate < 0.0){ throw std::invalid_argument("Interest rate cannot be negative"); }

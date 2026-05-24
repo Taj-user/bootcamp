@@ -6,8 +6,7 @@
 #include "SavingsAccount.h"
 
 int main() {
-	static int ACC_NUM = 100000;
-	static BankAccount* selected_acc_ptr = nullptr;
+	BankAccount* selected_acc_ptr = nullptr;
 	int choice;
 	std::vector<BankAccount*> accounts;
 
@@ -25,6 +24,7 @@ int main() {
 		std::cout << "9. Exit\n";
 		std::cout << "Enter you choice: ";
 		std::cin >> choice;
+		std::cin.ignore(1000, '\n');
 
 		switch(choice) {
 			case 1: {
@@ -37,7 +37,7 @@ int main() {
 				std::cin >> overdraftLimit;
 				
 				try {
-					BankAccount* ba = new CheckingAccount(ACC_NUM++, 0, name, overdraftLimit);
+					BankAccount* ba = new CheckingAccount(0, name, overdraftLimit);
 					accounts.push_back(ba);
 					std::cout << "Checking account created successfully\n";
 				}
@@ -56,7 +56,7 @@ int main() {
 				std::cin >> interestRate;
 
 				try {
-					BankAccount* ba = new SavingsAccount(ACC_NUM++, 0, name, interestRate);
+					BankAccount* ba = new SavingsAccount(0, name, interestRate);
 					accounts.push_back(ba);
 					std::cout << "Savings account created successfully\n";
 				}
@@ -67,6 +67,7 @@ int main() {
 
 			case 3: {
 				int acc_num;
+				bool found = false;
 				std::cout << "Enter the account number: ";
 				std::cin >> acc_num;
 
@@ -74,16 +75,17 @@ int main() {
 					if(ba->getAccountNumber() == acc_num) {
 						selected_acc_ptr = ba;
 						std::cout << "Successfully selected account: " << acc_num;
+						found = true;
 						break;
 					}
-					else { std::cerr << "Account not found\n"; }
 				}
+				if(!found) { std::cerr << "Account not found\n"; }
 
 				break;
 			}
 
 			case 4: {
-				int amt;
+				double amt;
 				std::cout << "Enter the amount you would like to deposit: ";
 				std::cin >> amt;
 
@@ -97,12 +99,12 @@ int main() {
 			}
 
 			case 5: {
-				int amt;
+				double amt;
 				std::cout << "Enter the amount you would like to withdraw: ";
 				std::cin >> amt;
 			
 				try {
-					if(selected_acc_ptr) { selected_acc_ptr->deposit(amt); }
+					if(selected_acc_ptr) { selected_acc_ptr->withdraw(amt); }
 					else { std::cerr << "No account selected\n"; }
 				}
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
@@ -112,6 +114,7 @@ int main() {
 
 			case 6: {
 				if(SavingsAccount* sa = dynamic_cast<SavingsAccount*>(selected_acc_ptr)) { sa->applyInterest(); }
+				else if(!selected_acc_ptr) { std::cerr << "No account selected\n"; }
 				else { std::cerr << "Selected account is not savings\n"; }
 
 				break;

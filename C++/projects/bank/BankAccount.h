@@ -4,6 +4,7 @@
 #include <string>
 
 class BankAccount {
+	static int nextAccountNumber_;
 	int accountNumber_;
 	std::string ownerName_;
 
@@ -11,7 +12,7 @@ class BankAccount {
 		double balance_;
 
 	public:
-		BankAccount(int accountNumber, double balance, const std::string& ownerName);
+		BankAccount(double balance, const std::string& ownerName);
 		BankAccount(const BankAccount&) = delete;
 		BankAccount& operator=(const BankAccount&) = delete;
 		bool operator==(const BankAccount& other) const;

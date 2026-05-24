@@ -3,9 +3,11 @@
 #include <iomanip>
 #include "BankAccount.h"
 
+int BankAccount::nextAccountNumber_ = 100000;
+
 // Bank Account Constructor
-BankAccount::BankAccount(int accountNumber, double balance, const std::string& ownerName)
-	: accountNumber_ (accountNumber)
+BankAccount::BankAccount(double balance, const std::string& ownerName)
+	: accountNumber_ (nextAccountNumber_++)
 	, ownerName_ (ownerName)
 	, balance_ (balance)
 {
@@ -53,6 +55,3 @@ void BankAccount::printStatement() const {
 double BankAccount::getBalance() const { return balance_; }
 int BankAccount::getAccountNumber() const { return accountNumber_; }
 std::string BankAccount::getOwnerName() const { return ownerName_; }
-
-// Deconstructor
-BankAccount::~BankAccount() { std::cout << "Destructor called for account: " << accountNumber_ << "\n"; }
