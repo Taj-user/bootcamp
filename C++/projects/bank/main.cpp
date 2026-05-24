@@ -13,14 +13,14 @@ int main() {
 	// Menu
 	do {
 		std::cout << "========== Bank Account Management System ==========\n";
-		std::cout << "1. Create a checking account.\n";
-		std::cout << "2. Create a savings account.\n";
-		std::cout << "3. Select an account. (By account number)\n";
-		std::cout << "4. Deposit to selected account.\n";
-		std::cout << "5. Withdraw from selected account.\n";
-		std::cout << "6. Apply interest. (Savings account only).\n";
-		std::cout << "7. Print statement for selected account.\n";
-		std::cout << "8. Print all accounts.\n";
+		std::cout << "1. Create a checking account\n";
+		std::cout << "2. Create a savings account\n";
+		std::cout << "3. Select an account (By account number)\n";
+		std::cout << "4. Deposit to selected account\n";
+		std::cout << "5. Withdraw from selected account\n";
+		std::cout << "6. Apply interest (Savings account only)\n";
+		std::cout << "7. Print statement for selected account\n";
+		std::cout << "8. Print all accounts\n";
 		std::cout << "9. Exit\n";
 		std::cout << "Enter you choice: ";
 		std::cin >> choice;
