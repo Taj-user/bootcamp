@@ -12,6 +12,8 @@ class BankAccount {
 
 	public:
 		BankAccount(int accountNumber, double balance, const std::string& ownerName);
+		BankAccount(const BankAccount&) = delete;
+		BankAccount& operator=(const BankAccount&) = delete;
 		bool operator==(const BankAccount& other) const;
 		friend std::ostream& operator<<(std::ostream& os, const BankAccount& account);
 		void deposit(double amount);
@@ -20,5 +22,5 @@ class BankAccount {
 		double getBalance() const;
 		int getAccountNumber() const;
 		std::string getOwnerName() const;
-		virtual ~BankAccount();
+		virtual ~BankAccount() = default;
 };

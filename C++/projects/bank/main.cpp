@@ -27,7 +27,7 @@ int main() {
 		std::cin >> choice;
 
 		switch(choice) {
-			case 1:
+			case 1: {
 				std::string name;
 				double overdraftLimit;
 
@@ -44,8 +44,9 @@ int main() {
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
 
 				break;
+			}
 
-			case 2:
+			case 2: {
 				std::string name;
 				double interestRate;
 
@@ -62,8 +63,9 @@ int main() {
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
 
 				break;
+			}
 
-			case 3:
+			case 3: {
 				int acc_num;
 				std::cout << "Enter the account number: ";
 				std::cin >> acc_num;
@@ -78,8 +80,9 @@ int main() {
 				}
 
 				break;
+			}
 
-			case 4:
+			case 4: {
 				int amt;
 				std::cout << "Enter the amount you would like to deposit: ";
 				std::cin >> amt;
@@ -91,8 +94,9 @@ int main() {
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
 
 				break;
+			}
 
-			case 5:
+			case 5: {
 				int amt;
 				std::cout << "Enter the amount you would like to withdraw: ";
 				std::cin >> amt;
@@ -104,20 +108,23 @@ int main() {
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
 
 				break;
+			}
 
-			case 6:
-				if(dynamic_cast<SavingsAccount*>(selected_acc_ptr)) { selected_acc_ptr->applyInterest(); }
+			case 6: {
+				if(SavingsAccount* sa = dynamic_cast<SavingsAccount*>(selected_acc_ptr)) { sa->applyInterest(); }
 				else { std::cerr << "Selected account is not savings\n"; }
 
 				break;
+			}
 
-			case 7:
+			case 7: {
 				if(selected_acc_ptr) { selected_acc_ptr->printStatement(); }
 				else { std::cerr << "No account selected\n"; }
 
 				break;
+			}
 
-			case 8:
+			case 8: {
 				if(accounts.size() > 0) {
 					for(BankAccount* ba : accounts) {
 						ba->printStatement();
@@ -126,15 +133,18 @@ int main() {
 				else { std::cerr << "No accounts to print\n"; }
 				
 				break;
+			}
 
-			case 9:
+			case 9: {
 				std::cout << "\nExiting...\n";
 
 				break;
+			}
 
-			default:
+			default: {
 				std::cerr << "\nInvalid choice!\n";
 				break;
+			}
 		}
 	}
 	while(choice != 9);
