@@ -7,7 +7,7 @@ int BankAccount::nextAccountNumber_ = 100000;
 
 // Bank Account Constructor
 BankAccount::BankAccount(double balance, const std::string& ownerName)
-	: accountNumber_ (nextAccountNumber_++)
+	: accountNumber_ (++nextAccountNumber_)
 	, ownerName_ (ownerName)
 	, balance_ (balance)
 {

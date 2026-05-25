@@ -18,7 +18,7 @@ int main() {
 		std::cout << "3. Select an account (By account number)\n";
 		std::cout << "4. Deposit to selected account\n";
 		std::cout << "5. Withdraw from selected account\n";
-		std::cout << "6. Apply interest (Savings account only)\n";
+		std::cout << "6. Apply interest to selected account (Savings account only)\n";
 		std::cout << "7. Print statement for selected account\n";
 		std::cout << "8. Print all accounts\n";
 		std::cout << "9. Exit\n";
@@ -74,7 +74,7 @@ int main() {
 				for(BankAccount* ba : accounts) {
 					if(ba->getAccountNumber() == acc_num) {
 						selected_acc_ptr = ba;
-						std::cout << "Successfully selected account: " << acc_num;
+						std::cout << "Successfully selected account: " << acc_num << "\n";
 						found = true;
 						break;
 					}
@@ -86,11 +86,14 @@ int main() {
 
 			case 4: {
 				double amt;
-				std::cout << "Enter the amount you would like to deposit: ";
-				std::cin >> amt;
 
 				try {
-					if(selected_acc_ptr) { selected_acc_ptr->deposit(amt); }
+					if(selected_acc_ptr) {
+						std::cout << "Enter the amount you would like to deposit: ";
+						std::cin >> amt;
+
+						selected_acc_ptr->deposit(amt);
+					}
 					else { std::cerr << "No account selected\n"; }
 				}
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
@@ -100,11 +103,13 @@ int main() {
 
 			case 5: {
 				double amt;
-				std::cout << "Enter the amount you would like to withdraw: ";
-				std::cin >> amt;
 			
 				try {
-					if(selected_acc_ptr) { selected_acc_ptr->withdraw(amt); }
+					if(selected_acc_ptr) {
+						std::cout << "Enter the amount you would like to withdraw: ";
+						std::cin >> amt;
+						selected_acc_ptr->withdraw(amt);
+					}
 					else { std::cerr << "No account selected\n"; }
 				}
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
@@ -113,7 +118,10 @@ int main() {
 			}
 
 			case 6: {
-				if(SavingsAccount* sa = dynamic_cast<SavingsAccount*>(selected_acc_ptr)) { sa->applyInterest(); }
+				if(SavingsAccount* sa = dynamic_cast<SavingsAccount*>(selected_acc_ptr)) {
+					sa->applyInterest(); 
+					std::cout << "Interest successfully applied to account: " << selected_acc_ptr->getAccountNumber() << "\n";
+				}
 				else if(!selected_acc_ptr) { std::cerr << "No account selected\n"; }
 				else { std::cerr << "Selected account is not savings\n"; }
 
