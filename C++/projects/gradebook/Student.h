@@ -15,6 +15,7 @@ class Student {
 		Student(const std::string& name);
 		void enrollCourse(const std::string& courseCode);
 		void addGrade(const std::string& courseCode, double grade);
+		bool isEnrolled(const std::string& courseCode) const;
 		double getGrade(const std::string& courseCode) const;
 		double getAverageGrade() const;
 		int getId() const;

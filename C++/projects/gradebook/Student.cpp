@@ -20,6 +20,9 @@ void Student::addGrade(const std::string& courseCode, double grade) {
 	else { throw std::out_of_range("Student not enrolled in course"); }
 }
 
+// Checks if student is enrolled in a course
+bool Student::isEnrolled(const std::string& courseCode) const { return enrolledCourses_.find(courseCode) != enrolledCourses_.end(); }
+
 // Get grade from grades unordered map
 double Student::getGrade(const std::string& courseCode) const {
 	if(grades_.find(courseCode) != grades_.end()) { return grades_.at(courseCode); }
@@ -42,7 +45,7 @@ std::string Student::getName() const { return name_; }
 
 // Print the trascript of a student
 void Student::printTranscript() const {
-	std::cout << "Student Transcript\n";
+	std::cout << "\nStudent Transcript\n";
 	std::cout << "Student ID: " << id_ << "\n";
 	std::cout << "Student Name: " << name_ << "\n";
 	if(grades_.empty()) { std::cerr << "No grades to print\n"; }
