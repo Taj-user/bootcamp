@@ -13,7 +13,7 @@ int GradeBook::addStudent(const std::string& name) {
 // Add course to courses set
 void GradeBook::addCourse(const std::string& courseCode) { courses_.emplace(courseCode); }
 
-// Enroll a studnet to a course
+// Enroll a student to a course
 void GradeBook::enrollStudent(int studentId, const std::string& courseCode) {
 	auto s_it = students_.find(studentId);
 	auto c_it = courses_.find(courseCode);
