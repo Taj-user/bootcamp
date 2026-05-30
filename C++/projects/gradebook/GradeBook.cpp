@@ -64,6 +64,5 @@ std::string GradeBook::getTopStudent() const {
 		}
 		catch(const std::runtime_error& ree) { continue; }
 	}
-	std::cout << "Top student\n";
 	return name;
 }

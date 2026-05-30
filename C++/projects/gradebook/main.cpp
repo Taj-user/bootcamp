@@ -4,6 +4,7 @@
 
 int main(void) {
 	int choice;
+	GradeBook gradebook;
 
 	do {
 		std::cout << "===== Student Grade Book =====\n";
@@ -24,8 +25,8 @@ int main(void) {
 				std::cout << "Enter the name of the student you would like to add: ";
 				std::cin >> name;
 
-				addStudent(name);
-				std::cout << "Student " << name << " added successfully\n";
+				int id = gradebook.addStudent(name);
+				std::cout << "Student " << name << " with ID "<< id << " added successfully\n";
 
 				break;
 			}
@@ -35,7 +36,7 @@ int main(void) {
 				std::cout << "Enter the course code you would like to add: ";
 				std::cin >> courseCode;
 
-				addCourse(courseCode);
+				gradebook.addCourse(courseCode);
 				std::cout << "Course " << courseCode << " added successfully\n";
 
 				break;
@@ -50,16 +51,16 @@ int main(void) {
 				std::cin >> courseCode;
 				// Could check if student is alr enrolled before the try
 				try {
-					enrollStudent(studentId, courseCode);
+					gradebook.enrollStudent(studentId, courseCode);
 					std::cout << "Student " << studentId << " is now enrolled in " << courseCode << "\n";
 				}
-				catch(const std::out_of_range& oore) { oore.what(); }
+				catch(const std::out_of_range& oore) { std::cerr << oore.what() << "\n"; }
 
 				break;
 			}
 
 			case 4: {
-				int studentId
+				int studentId;
 				std::string courseCode;
 				double grade;
 
@@ -71,16 +72,16 @@ int main(void) {
 				std::cin >> grade;
 
 				try {
-					recordGrade(studentId, courseCode, grade);
+					gradebook.recordGrade(studentId, courseCode, grade);
 					std::cout << "Grade recorded successfully\n";
 				}
-				catch(const std::out_of_range& oore) { oore.what(); }
+				catch(const std::out_of_range& oore) { std::cerr << oore.what() << "\n"; }
 
 				break;
 			}
 
 			case 5: {
-				printAllTranscripts();
+				gradebook.printAllTranscripts();
 
 				break;
 			}
@@ -90,13 +91,17 @@ int main(void) {
 				std::cout << "Enter the course code: ";
 				std::cin >> courseCode;
 
-				printCourseRoster(courseCode);
+				gradebook.printCourseRoster(courseCode);
 
 				break;
 			}
 
 			case 7: {
-				getTopStudent();
+				try {
+					std::string top = gradebook.getTopStudent();
+					std::cout << "Top Student: " << top << "\n";
+				}
+				catch(const std::runtime_error& ree) { std::cerr << ree.what() << "\n"; }
 
 				break;
 			}
