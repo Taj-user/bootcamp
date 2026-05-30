@@ -2,9 +2,9 @@
 #include <string.h>
 // #include <sys/time.h>
 
-// TODO: write custom strcpy, strcat, strcmp, and strstr
+// TODO: write custom strcmp, and strstr
 
-#define RUNS 1000000
+// #define RUNS 1000000
 
 // Custom strlen
 size_t my_strlen(const char* str) {
@@ -17,14 +17,31 @@ size_t my_strlen(const char* str) {
 }
 
 // Custom strcpy
-char* my_strcpy(char* s1, char* s2) {
-	if(s2 == NULL) { return NULL; }
+char* my_strcpy(char* dest, char* src) {
+	if(src == NULL) { return NULL; }
 
-	size_t size = my_strlen(s2);
-	for(size_t i = 0; i <= size; i++) { *(s1 + i) = *(s2 + i); }
+	size_t len = my_strlen(src);
+	for(size_t i = 0; i <= len; i++) { *(dest + i) = *(src + i); }
 
-	return s1;
+	return dest;
 }
+
+// Custom strcat
+char* my_strcat(char* dest, char* src) {
+	if(src == NULL) { return NULL; }
+
+	size_t src_len = my_strlen(src);
+	size_t index;
+	for(size_t i = 0; i < src_len; i++) {
+		if(*(dest + i) == '\0') { index = i; }
+	}
+	for(size_t i = index, j = 0; i <= src_len || j <= src_len; i++, j++) { *(dest + i) = *(src + j); }
+
+	return dest;
+}
+
+// Custom strcmp
+
 
 // // Timer
 // long long now_microseconds() {
@@ -51,12 +68,12 @@ char* my_strcpy(char* s1, char* s2) {
 
 int main(void) {
 	// const char* test = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,";
-	char str[20];
 	char bread[] = "Bread";
+	char butter[] = " Butter";
 
-	my_strcpy(str, bread);
+	my_strcat(bread, butter);
 
-	printf("%s", str);
+	printf("%s", bread);
 
 	return 0;
 }
