@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <algorithm>
+#include <numeric>
 #include "GradeBook.h"
 
 // Add student to students unordered map
@@ -83,4 +84,25 @@ std::string GradeBook::getTopStudent() const {
 		catch(const std::runtime_error& ree) { continue; }
 	}
 	return name;
+}
+
+double GradeBook::getClassAverage(const std::string& courseCode) const {
+	int count = 0;
+
+	double sum = std::accumulate(
+		students_.begin(),
+		students_.end(),
+		0.0,
+		[&](double sum, const auto& pair) {
+			if((pair.second).isEnrolled(courseCode)) {
+				count++;
+				return sum + (pair.second).getAverageGrade();
+			}
+			return sum;
+		}
+	);
+
+	if(count == 0) { return 0.0; }
+	
+	return sum / count;
 }

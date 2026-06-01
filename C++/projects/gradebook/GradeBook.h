@@ -18,4 +18,4 @@ class GradeBook {
 		void printAllTranscriptsSorted() const;
 		void printCourseRoster(const std::string& courseCode) const;
 		std::string getTopStudent() const;
-};
+		double getClassAverage(const std::string& courseCode) const;
