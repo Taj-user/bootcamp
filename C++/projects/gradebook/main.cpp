@@ -13,9 +13,10 @@ int main(void) {
 		std::cout << "3. Enroll student in course\n";
 		std::cout << "4. Record grade\n";
 		std::cout << "5. Print all transcripts\n";
-		std::cout << "6. Print course roster\n";
-		std::cout << "7. Get top student\n";
-		std::cout << "8. Exit\n";
+		std::cout << "6. Print all transcripts sorted\n";
+		std::cout << "7. Print course roster\n";
+		std::cout << "8. Get top student\n";
+		std::cout << "9. Exit\n";
 		std::cout << "Enter your choice: ";
 		std::cin >> choice;
 
@@ -87,6 +88,12 @@ int main(void) {
 			}
 
 			case 6: {
+				gradebook.printAllTranscriptsSorted();
+
+				break;
+			}
+
+			case 7: {
 				std::string courseCode;
 				std::cout << "Enter the course code: ";
 				std::cin >> courseCode;
@@ -96,7 +103,7 @@ int main(void) {
 				break;
 			}
 
-			case 7: {
+			case 8: {
 				try {
 					std::string top = gradebook.getTopStudent();
 					std::cout << "Top Student: " << top << "\n";
@@ -106,7 +113,7 @@ int main(void) {
 				break;
 			}
 			
-			case 8: {
+			case 9: {
 				std::cout << "\nExiting...\n";
 
 				break;
@@ -119,7 +126,7 @@ int main(void) {
 			}
 		}
 	}
-	while(choice != 8);
+	while(choice != 9);
 
 	return 0;
 }

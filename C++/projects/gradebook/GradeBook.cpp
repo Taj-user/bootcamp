@@ -1,6 +1,8 @@
 #include <iostream>
+#include <vector>
 #include <stdexcept>
 #include <iomanip>
+#include <algorithm>
 #include "GradeBook.h"
 
 // Add student to students unordered map
@@ -36,6 +38,22 @@ void GradeBook::recordGrade(int studentId, const std::string& courseCode, double
 // Print all transcripts of students in student unordered map
 void GradeBook::printAllTranscripts() const {
 	for(const auto& pair : students_) { (pair.second).printTranscript(); }
+}
+
+// Print all transcripts of students in student unordered map sorted
+void GradeBook::printAllTranscriptsSorted() const {
+	std::vector<std::pair<std::string, int>> sort_vec;
+
+	for(const auto& pair : students_) {
+		sort_vec.emplace_back(pair.second.getName(), pair.first);
+	}
+
+	std::sort(sort_vec.begin(), sort_vec.end());
+
+	for(const auto& pair : sort_vec) {
+		auto it = students_.find(pair.second);
+		(it->second).printTranscript();
+	}
 }
 
 // Print students enrolled in specific course

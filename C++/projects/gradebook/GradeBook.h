@@ -15,6 +15,7 @@ class GradeBook {
 		void enrollStudent(int studentId, const std::string& courseCode);
 		void recordGrade(int studentId, const std::string& courseCode, double grade);
 		void printAllTranscripts() const;
+		void printAllTranscriptsSorted() const;
 		void printCourseRoster(const std::string& courseCode) const;
 		std::string getTopStudent() const;
 };
