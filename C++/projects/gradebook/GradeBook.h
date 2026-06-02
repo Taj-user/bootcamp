@@ -19,3 +19,5 @@ class GradeBook {
 		void printCourseRoster(const std::string& courseCode) const;
 		std::string getTopStudent() const;
 		double getClassAverage(const std::string& courseCode) const;
+		std::vector<std::string> getPassingStudents(const std::string& courseCode, double passMark) const;
+		void saveToFile(const std::string& filename) const;

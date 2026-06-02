@@ -54,3 +54,6 @@ void Student::printTranscript() const {
 		std::cout << "Student Average: " << std::fixed << std::setprecision(2) << getAverageGrade() << "\n";
 	}
 }
+
+// Returns grades unordered_map
+const std::unordered_map<std::string, double>& Student::getGrades() { return grades_; }

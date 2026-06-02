@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <numeric>
+#include <fstream>
 #include "GradeBook.h"
 
 // Add student to students unordered map
@@ -86,6 +87,7 @@ std::string GradeBook::getTopStudent() const {
 	return name;
 }
 
+// Returns average grade for a course across all enrolled students
 double GradeBook::getClassAverage(const std::string& courseCode) const {
 	int count = 0;
 
@@ -105,4 +107,34 @@ double GradeBook::getClassAverage(const std::string& courseCode) const {
 	if(count == 0) { return 0.0; }
 	
 	return sum / count;
+}
+
+// Returns a vector of names of who passed a course
+std::vector<std::string> GradeBook::getPassingStudents(const std::string& courseCode, double passMark) const {
+	std::vector<std::string> vec;
+
+	std::for_each(
+		students_.begin(),
+		students_.end(),
+		[&](const auto& pair) {
+			if(pair.second.isEnrolled(courseCode) && pair.second.getGrade(courseCode) >= passMark) {
+				vec.push_back(pair.second.getName());
+			}
+		}
+	);
+
+	return vec;
+}
+
+// Saves all student data to a csv file (format: studentId,name,courseCode,grade)
+void GradeBook::saveToFile(const std::string& filename) const {
+	std::ofstream file(filename);
+
+	if(!file) { throw std::runtime_error("Could not open file"); }
+
+	for(const auto& [id, student] : students_) {
+		for(const auto& [courseCode, grade] : student.getGrades()) {
+			file << id << "," << student.getName() << "," << courseCode << "," << grade << "\n";
+		}
+	}
 }

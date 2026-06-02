@@ -21,4 +21,5 @@ class Student {
 		int getId() const;
 		std::string getName() const;
 		void printTranscript() const;
+		std::unordered_map<std::string, double> getGrades() const;
 };
