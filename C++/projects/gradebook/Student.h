@@ -13,6 +13,7 @@ class Student {
 
 	public:
 		Student(const std::string& name);
+		Student(int id, const std::string& name);
 		void enrollCourse(const std::string& courseCode);
 		void addGrade(const std::string& courseCode, double grade);
 		bool isEnrolled(const std::string& courseCode) const;
@@ -21,5 +22,5 @@ class Student {
 		int getId() const;
 		std::string getName() const;
 		void printTranscript() const;
-		std::unordered_map<std::string, double> getGrades() const;
+		const std::unordered_map<std::string, double>& getGrades() const;
 };

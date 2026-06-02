@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
+#include <vector>
 #include <set>
+#include <unordered_map>
 #include "Student.h"
 
 class GradeBook {
@@ -20,4 +21,7 @@ class GradeBook {
 		std::string getTopStudent() const;
 		double getClassAverage(const std::string& courseCode) const;
 		std::vector<std::string> getPassingStudents(const std::string& courseCode, double passMark) const;
+		std::vector<std::string> findStudentsByName(const std::string& query) const;
 		void saveToFile(const std::string& filename) const;
+		void loadFromFile(const std::string& filename);
+};

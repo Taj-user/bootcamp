@@ -11,6 +11,13 @@ Student::Student(const std::string& name)
 	, name_ (name)
 {}
 
+Student::Student(int id, const std::string& name)
+	: id_ (id)
+	, name_ (name)
+{
+	if(id >= nextId_) { nextId_ = id + 1; }
+}
+
 // Add course to the courses unordered set
 void Student::enrollCourse(const std::string& courseCode) { enrolledCourses_.insert(courseCode); }
 
@@ -56,4 +63,4 @@ void Student::printTranscript() const {
 }
 
 // Returns grades unordered_map
-const std::unordered_map<std::string, double>& Student::getGrades() { return grades_; }
+const std::unordered_map<std::string, double>& Student::getGrades() const { return grades_; }

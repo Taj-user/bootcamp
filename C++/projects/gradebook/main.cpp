@@ -6,6 +6,8 @@ int main(void) {
 	int choice;
 	GradeBook gradebook;
 
+	gradebook.loadFromFile("gradebook.csv");
+
 	do {
 		std::cout << "===== Student Grade Book =====\n";
 		std::cout << "1. Add Student\n";
@@ -16,7 +18,10 @@ int main(void) {
 		std::cout << "6. Print all transcripts sorted\n";
 		std::cout << "7. Print course roster\n";
 		std::cout << "8. Get top student\n";
-		std::cout << "9. Exit\n";
+		std::cout << "9. Get class average of a course\n";
+		std::cout << "10. Get passing students of a course\n";
+		std::cout << "11. Find student by name\n";
+		std::cout << "0. Save and exit\n";
 		std::cout << "Enter your choice: ";
 		std::cin >> choice;
 
@@ -112,8 +117,58 @@ int main(void) {
 
 				break;
 			}
-			
+
 			case 9: {
+				std::string courseCode;
+				std::cout << "Enter the course code: ";
+				std::cin >> courseCode;
+
+				double avg = gradebook.getClassAverage(courseCode);
+
+				std::cout << "Class average for " << courseCode << " is " << avg << "\n";
+
+				break;
+			}
+
+			case 10: {
+				std::string courseCode;
+				double passMark;
+
+				std::cout << "Enter the course code: ";
+				std::cin >> courseCode;
+
+				std::cout << "Enter the pass mark: ";
+				std::cin >> passMark;
+
+				std::vector<std::string> vec = gradebook.getPassingStudents(courseCode, passMark);
+
+				int count = 0;
+				std::cout << "Passing students:\n";
+				for(const auto& name : vec) {
+					std::cout << "Student " << ++count << ": " << name << "\n";
+				}
+
+				break;
+			}
+
+			case 11: {
+				std::string name;
+				std::cout << "Enter the name of the student: ";
+				std::cin >> name;
+
+				std::vector<std::string> vec = gradebook.findStudentsByName(name);
+
+				int count = 0;
+				std::cout << "Students:\n";
+				for(const auto& name : vec) {
+					std::cout << "Student " << ++count << ": " << name << "\n";
+				}
+
+				break;
+			}
+			
+			case 0: {
+				gradebook.saveToFile("gradebook.csv");
 				std::cout << "\nExiting...\n";
 
 				break;
@@ -126,7 +181,7 @@ int main(void) {
 			}
 		}
 	}
-	while(choice != 9);
+	while(choice != 0);
 
 	return 0;
 }

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numeric>
 #include <fstream>
+#include <cctype>
 #include "GradeBook.h"
 
 // Add student to students unordered map
@@ -98,7 +99,7 @@ double GradeBook::getClassAverage(const std::string& courseCode) const {
 		[&](double sum, const auto& pair) {
 			if((pair.second).isEnrolled(courseCode)) {
 				count++;
-				return sum + (pair.second).getAverageGrade();
+				return sum + (pair.second).getGrade(courseCode);
 			}
 			return sum;
 		}
@@ -126,6 +127,36 @@ std::vector<std::string> GradeBook::getPassingStudents(const std::string& course
 	return vec;
 }
 
+// Returns all students whose name contains the query string
+std::vector<std::string> GradeBook::findStudentsByName(const std::string& query) const {
+	std::vector<std::string> result;
+	std::string lowerQuery = query;
+	std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), [](unsigned char c) { return std::tolower(c); });
+
+	auto it = students_.begin();
+
+	while(it != students_.end()) {
+		it = std::find_if(
+			it,
+			students_.end(),
+			[&](const auto& pair) {
+				std::string name = pair.second.getName();
+				std::string lowerName = name;
+				std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c) { return std::tolower(c); });
+
+				return lowerName.find(lowerQuery) != std::string::npos;
+			}
+		);
+
+		if(it != students_.end()) {
+			result.push_back(it->second.getName());
+			++it;
+		}
+	}
+
+	return result;
+}
+
 // Saves all student data to a csv file (format: studentId,name,courseCode,grade)
 void GradeBook::saveToFile(const std::string& filename) const {
 	std::ofstream file(filename);
@@ -136,5 +167,36 @@ void GradeBook::saveToFile(const std::string& filename) const {
 		for(const auto& [courseCode, grade] : student.getGrades()) {
 			file << id << "," << student.getName() << "," << courseCode << "," << grade << "\n";
 		}
+	}
+}
+
+// Loads data from the csv
+void GradeBook::loadFromFile(const std::string& filename) {
+	std::ifstream file(filename);
+	std::string line;
+
+	while(std::getline(file, line)) {
+		std::stringstream ss(line);
+		std::string id_str, name, courseCode, grade_str;
+
+		std::getline(ss, id_str, ',');
+		std::getline(ss, name, ',');
+		std::getline(ss, courseCode, ',');
+		std::getline(ss, grade_str, ',');
+		
+		int id = std::stoi(id_str);
+		double grade = std::stod(grade_str);
+
+		auto it = students_.find(id);
+
+		if(it == students_.end()) {
+			students_.emplace(id, Student(id, name));
+		}
+
+		Student& student = students_.at(id);
+
+		student.enrollCourse(courseCode);
+		student.addGrade(courseCode, grade);
+		courses_.insert(courseCode);
 	}
 }
