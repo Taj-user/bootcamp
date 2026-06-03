@@ -3,11 +3,13 @@
 class Buffer {
 	private:
 		int size_;
-		int* data;
+		int* data_;
 
-	Buffer(int size);
-	Buffer(const Buffer& other);
-	Buffer(Buffer&& other) noexcept;
-	Buffer& operator=(Buffer&& other) noexcept;
-	~Buffer();
+	public:
+	    Buffer(int size);
+	    Buffer(const Buffer& other);
+	    Buffer(Buffer&& other) noexcept;
+	    Buffer& operator=(Buffer&& other) noexcept;
+	    int getSize() const;
+	    ~Buffer();
 };

@@ -22,7 +22,7 @@ Buffer::Buffer(Buffer&& other) noexcept
 	other.data_ = nullptr;
 }
 
-Buffer& Buffer::operation=(Buffer&& other) noexcept {
+Buffer& Buffer::operator=(Buffer&& other) noexcept {
 	if(this == &other) return *this;
 
 	delete[] data_;
@@ -35,5 +35,7 @@ Buffer& Buffer::operation=(Buffer&& other) noexcept {
 
 	return *this;
 }
+
+int Buffer::getSize() const { return size_; }
 
 Buffer::~Buffer() { delete[] data_; }
