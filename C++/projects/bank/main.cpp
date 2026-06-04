@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 #include "BankAccount.h"
 #include "CheckingAccount.h"
 #include "SavingsAccount.h"
@@ -8,7 +9,7 @@
 int main() {
 	BankAccount* selected_acc_ptr = nullptr;
 	int choice;
-	std::vector<BankAccount*> accounts;
+	std::vector<std::unique_ptr<BankAccount>> accounts;
 
 	// Menu
 	do {
@@ -37,8 +38,7 @@ int main() {
 				std::cin >> overdraftLimit;
 				
 				try {
-					BankAccount* ba = new CheckingAccount(0, name, overdraftLimit);
-					accounts.push_back(ba);
+					accounts.emplace_back(std::make_unique<CheckingAccount>(0, name, overdraftLimit));
 					std::cout << "Checking account created successfully\n";
 				}
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
@@ -56,8 +56,7 @@ int main() {
 				std::cin >> interestRate;
 
 				try {
-					BankAccount* ba = new SavingsAccount(0, name, interestRate);
-					accounts.push_back(ba);
+					accounts.emplace_back(std::make_unique<SavingsAccount>(0, name, interestRate));
 					std::cout << "Savings account created successfully\n";
 				}
 				catch(const std::invalid_argument& iae) { std::cerr << iae.what(); }
@@ -71,9 +70,9 @@ int main() {
 				std::cout << "Enter the account number: ";
 				std::cin >> acc_num;
 
-				for(BankAccount* ba : accounts) {
+				for(const auto& ba : accounts) {
 					if(ba->getAccountNumber() == acc_num) {
-						selected_acc_ptr = ba;
+						selected_acc_ptr = ba.get();
 						std::cout << "Successfully selected account: " << acc_num << "\n";
 						found = true;
 						break;
@@ -137,7 +136,7 @@ int main() {
 
 			case 8: {
 				if(accounts.size() > 0) {
-					for(BankAccount* ba : accounts) {
+					for(const auto& ba : accounts) {
 						ba->printStatement();
 					}
 				}
@@ -159,10 +158,6 @@ int main() {
 		}
 	}
 	while(choice != 9);
-	
-	// Cleanup
-	for(BankAccount* ba : accounts) { delete ba; }
-	accounts.clear();
 	
 	return 0;
 }
