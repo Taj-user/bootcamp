@@ -1,4 +1,3 @@
-#include <iostream>
 #include "TaskQueue.h"
 
 TaskQueue::TaskQueue()
@@ -8,14 +7,16 @@ TaskQueue::TaskQueue()
 void TaskQueue::workerLoop() {
     while(running_) {
         std::unique_lock<std::mutex> lock(mtx_);
-        if(!taskqueue_.empty()) {
+        cv_.wait(lock, [this]() { return !taskqueue_.empty() || !running_;} );
+
+        if(running_ == false) { break; }
+
+        while(!taskqueue_.empty()) {
             std::function<void()> front_task = taskqueue_.front();
             taskqueue_.pop();
             lock.unlock();
             front_task();
-        }
-        else {
-            lock.unlock();
+            lock.lock();
         }
     }
 }
@@ -23,7 +24,7 @@ void TaskQueue::workerLoop() {
 void TaskQueue::enqueue(std::function<void()> task) {
     std::unique_lock<std::mutex> lock(mtx_);
     taskqueue_.push(task);
-    lock.unlock();
+    cv_.notify_one();
 }
 
 void TaskQueue::start() {
@@ -32,5 +33,6 @@ void TaskQueue::start() {
 }
 void TaskQueue::stop() {
     running_ = false;
+    cv_.notify_one();
     t_.join();
 }
