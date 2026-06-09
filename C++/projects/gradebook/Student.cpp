@@ -31,9 +31,9 @@ void Student::addGrade(const std::string& courseCode, double grade) {
 bool Student::isEnrolled(const std::string& courseCode) const { return enrolledCourses_.find(courseCode) != enrolledCourses_.end(); }
 
 // Get grade from grades unordered map
-double Student::getGrade(const std::string& courseCode) const {
+std::optional<double> Student::tryGetGrade(const std::string& courseCode) const {
 	if(grades_.find(courseCode) != grades_.end()) { return grades_.at(courseCode); }
-	else { throw std::out_of_range("No grade recorded for course"); }
+	return std::nullopt;
 }
 
 // Get average grade in grades unordered map

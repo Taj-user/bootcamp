@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <optional>
 
 class Student {
 	static int nextId_;
@@ -17,7 +18,7 @@ class Student {
 		void enrollCourse(const std::string& courseCode);
 		void addGrade(const std::string& courseCode, double grade);
 		bool isEnrolled(const std::string& courseCode) const;
-		double getGrade(const std::string& courseCode) const;
+        std::optional<double> tryGetGrade(const std::string& courseCode) const;
 		double getAverageGrade() const;
 		int getId() const;
 		std::string getName() const;

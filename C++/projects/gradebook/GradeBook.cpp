@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <iomanip>
+#include <sstream>
 #include <algorithm>
 #include <numeric>
 #include <fstream>
@@ -97,9 +97,9 @@ double GradeBook::getClassAverage(const std::string& courseCode) const {
 		students_.end(),
 		0.0,
 		[&](double sum, const auto& pair) {
-			if((pair.second).isEnrolled(courseCode)) {
+			if((pair.second).isEnrolled(courseCode) && pair.second.tryGetGrade(courseCode).has_value()) {
 				count++;
-				return sum + (pair.second).getGrade(courseCode);
+				return sum + (pair.second).tryGetGrade(courseCode);
 			}
 			return sum;
 		}
@@ -118,7 +118,7 @@ std::vector<std::string> GradeBook::getPassingStudents(const std::string& course
 		students_.begin(),
 		students_.end(),
 		[&](const auto& pair) {
-			if(pair.second.isEnrolled(courseCode) && pair.second.getGrade(courseCode) >= passMark) {
+			if(pair.second.isEnrolled(courseCode) && pair.second.tryGetGrade(courseCode) >= passMark && pair.second.tryGetGrade(courseCode).has_value()) {
 				vec.push_back(pair.second.getName());
 			}
 		}
