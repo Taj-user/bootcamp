@@ -1,10 +1,14 @@
 #include "Shell.h"
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
-#include <sys/syscall.h>
+#include <cstdlib>
+#include <cerrno>
+// #include <sys/syscall.h>                                     // uncomment when compiling
+// #include <sys/wait.h>
 #include <sys/types.h>
 
-bool Shell::isBuiltin(std::vector<std::string>& cmd) const {
+bool Shell::isBuiltin(const std::string& cmd) const {
 	return cmd == "cd" || cmd ==  "exit" || cmd == "pwd";
 }
 
@@ -13,4 +17,44 @@ std::string Shell::readInput() const {
 	std::cout << "> ";
 	std::getline(std::cin, input);
 	return input;
+}
+
+std::vector<std::string> Shell::parseInput(const std::string& input) const {
+    std::vector<std::string> tokens;
+    std::stringstream ss(input);
+    std::string field;
+    while(ss >> field) tokens.push_back(field);
+    return tokens;
+}
+
+void Shell::handleBuiltin(std::vector<std::string>& args) {
+    if(args.empty()) return;
+    if(args.front() == "exit") std::exit(0);
+    else if(args.front() == "cd") {
+        if(args.size() < 2) {
+            std::cerr << "cd: missing argument\n";
+            return;
+        }
+        if(chdir(args[1].c_str()) == -1) {
+            perror("cd");
+            return;
+        }
+    }
+    else if(args.front() == "pwd") {
+        char cwd[1024];
+        if(getcwd(cwd, sizeof(cwd))) std::cout << cwd << "\n";
+        return;
+    }
+}
+
+void Shell::execute(std::vector<std::string>& args) {
+    if(args.empty()) return;
+    std::vector<char*> cArgs;
+    for(auto& arg : args) {
+        cArgs.push_back(const_cast<char*>(arg.c_str()));
+    }
+    cArgs.push_back(nullptr);
+    execvp(cArgs[0], cArgs.data());
+    std::cerr << "command not found: " << args[0] << "\n";
+    exit(127);
 }
