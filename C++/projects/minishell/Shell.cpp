@@ -2,10 +2,10 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <cstdio>
 #include <cstdlib>
 #include <cerrno>
-// #include <sys/syscall.h>                                     // uncomment when compiling
-// #include <sys/wait.h>
+#include <sys/wait.h>
 #include <sys/types.h>
 
 bool Shell::isBuiltin(const std::string& cmd) const {
@@ -54,7 +54,30 @@ void Shell::execute(std::vector<std::string>& args) {
         cArgs.push_back(const_cast<char*>(arg.c_str()));
     }
     cArgs.push_back(nullptr);
-    execvp(cArgs[0], cArgs.data());
-    std::cerr << "command not found: " << args[0] << "\n";
-    exit(127);
+
+    pid_t pid = fork();
+    if(pid < 0) {
+        std::cerr << "fork failed\n";
+        return;
+    }
+    else if(pid == 0) {
+        execvp(cArgs[0], cArgs.data());
+        perror(args[0].c_str());
+        exit(127);
+    }
+    else {
+        int status;
+        waitpid(pid, &status, 0);
+    }
+}
+
+void Shell::run() {
+    while(true) {
+        std::string input = readInput();
+        if(input.empty()) continue;
+        std::vector<std::string> args = parseInput(input);
+        if(args.empty()) continue;
+        if(isBuiltin(args[0])) handleBuiltin(args);
+        else execute(args);
+    }
 }
