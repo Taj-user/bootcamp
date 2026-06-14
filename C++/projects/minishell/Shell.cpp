@@ -20,18 +20,36 @@ std::string Shell::readInput() const {
 	return input;
 }
 
-std::vector<std::vector<std::string>> Shell::parseInput(const std::string& input) const {
-    std::vector<std::vector<std::string>> tokens;
+std::vector<Command> Shell::parseInput(const std::string& input) const {
+    std::vector<Command> commands;
     std::stringstream pipeStream(input);
-    std::string arg;
-    while(std::getline(pipeStream, arg, '|')) {
-	    std::stringstream tokenStream(arg);
-	    std::vector<std::string> args;
+    std::string seg;
+    while(std::getline(pipeStream, seg, '|')) {
+	    std::stringstream tokenStream(seg);
+	    std::vector<std::string> tokens;
 	    std::string token;
-	    while(tokenStream >> token) args.push_back(token);
-	    if(!args.empty()) tokens.push_back(args);
+	    while(tokenStream >> token) tokens.push_back(token);
+	    if(tokens.empty()) continue;
+
+	    Command cmd;
+	    for(size_t i = 0; i < tokens.size(); i++) {
+	        if((tokens[i] == ">" || tokens[i] == "<") && i + 1 < tokens.size()) {
+	            if(tokens[i] == ">") {
+                    cmd.outputFile = tokens[i + 1];
+                    i++;
+	            }
+	            else {
+	                cmd.inputFile = tokens[i + 1];
+	                i++;
+	            }
+	        }
+	        else {
+	            cmd.args.push_back(tokens[i]);
+	        }
+	    }
+        commands.push_back(cmd);
     }
-    return tokens;
+    return commands;
 }
 
 void Shell::handleBuiltin(std::vector<std::string>& args) {
@@ -54,7 +72,7 @@ void Shell::handleBuiltin(std::vector<std::string>& args) {
     }
 }
 
-void Shell::executePipeline(std::vector<std::vector<std::string>>& cmds) {
+void Shell::executePipeline(std::vector<Command>& cmds) {
     int numCmds= cmds.size();
     int numPipes = numCmds - 1;
     std::vector<std::array<int, 2>> pipes(numPipes);
