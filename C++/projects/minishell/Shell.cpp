@@ -1,5 +1,6 @@
 #include "Shell.h"
 #include <iostream>
+#include <array>
 #include <sstream>
 #include <unistd.h>
 #include <cstdio>
@@ -19,11 +20,17 @@ std::string Shell::readInput() const {
 	return input;
 }
 
-std::vector<std::string> Shell::parseInput(const std::string& input) const {
-    std::vector<std::string> tokens;
-    std::stringstream ss(input);
-    std::string field;
-    while(ss >> field) tokens.push_back(field);
+std::vector<std::vector<std::string>> Shell::parseInput(const std::string& input) const {
+    std::vector<std::vector<std::string>> tokens;
+    std::stringstream pipeStream(input);
+    std::string arg;
+    while(std::getline(pipeStream, arg, '|')) {
+	    std::stringstream tokenStream(arg);
+	    std::vector<std::string> args;
+	    std::string token;
+	    while(tokenStream >> token) args.push_back(token);
+	    if(!args.empty()) tokens.push_back(args);
+    }
     return tokens;
 }
 
@@ -47,25 +54,57 @@ void Shell::handleBuiltin(std::vector<std::string>& args) {
     }
 }
 
-void Shell::execute(std::vector<std::string>& args) {
-    if(args.empty()) return;
-    std::vector<char*> cArgs;
-    for(auto& arg : args) {
-        cArgs.push_back(const_cast<char*>(arg.c_str()));
-    }
-    cArgs.push_back(nullptr);
+void Shell::executePipeline(std::vector<std::vector<std::string>>& cmds) {
+    int numCmds= cmds.size();
+    int numPipes = numCmds - 1;
+    std::vector<std::array<int, 2>> pipes(numPipes);
 
-    pid_t pid = fork();
-    if(pid < 0) {
-        std::cerr << "fork failed\n";
-        return;
+    for(int i = 0; i < numPipes; i++) {
+        if(pipe(pipes[i].data()) == -1) {
+            perror("pipe");
+            return;
+        }
     }
-    else if(pid == 0) {
-        execvp(cArgs[0], cArgs.data());
-        perror(args[0].c_str());
-        exit(127);
+
+    std::vector<pid_t> childPids;
+    for(int i = 0; i < numCmds; i++) {
+        pid_t pid = fork();
+        if(pid < 0) {
+            perror("fork");
+            return;
+        }
+        else if(pid == 0) {
+            if(i > 0) {
+                dup2(pipes[i - 1][0], STDIN_FILENO);
+            }
+            if(i < numCmds - 1) {
+                dup2(pipes[i][1], STDOUT_FILENO);
+            }
+            for(auto& p : pipes) {
+                close(p[0]);
+                close(p[1]);
+            }
+
+            std::vector<char*> cArgs;
+            for(auto& cmd : cmds[i]) {
+                cArgs.push_back(const_cast<char*>(cmd.c_str()));
+            }
+            cArgs.push_back(nullptr);
+            execvp(cArgs[0], cArgs.data());
+            perror(cArgs[0]);
+            exit(127);
+        }
+        else {
+            childPids.push_back(pid);
+        }
     }
-    else {
+
+    for(auto& p : pipes) {
+        close(p[0]);
+        close(p[1]);
+    }
+
+    for(pid_t pid : childPids) {
         int status;
         waitpid(pid, &status, 0);
     }
@@ -75,9 +114,9 @@ void Shell::run() {
     while(true) {
         std::string input = readInput();
         if(input.empty()) continue;
-        std::vector<std::string> args = parseInput(input);
-        if(args.empty()) continue;
-        if(isBuiltin(args[0])) handleBuiltin(args);
-        else execute(args);
+        std::vector<std::vector<std::string>> cmds = parseInput(input);
+        if(cmds.empty()) continue;
+        if(cmds.size() == 1 && isBuiltin(cmds[0][0])) handleBuiltin(cmds[0]);
+        else executePipeline(cmds);
     }
 }
