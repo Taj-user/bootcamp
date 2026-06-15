@@ -5,7 +5,8 @@
 #include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
-#include <cerrno>
+#include <fcntl.h>
+// #include <cerrno>                    // use for more precise error handling
 #include <sys/wait.h>
 #include <sys/types.h>
 
@@ -92,19 +93,41 @@ void Shell::executePipeline(std::vector<Command>& cmds) {
             return;
         }
         else if(pid == 0) {
-            if(i > 0) {
-                dup2(pipes[i - 1][0], STDIN_FILENO);
+            // STDIN SETUP
+            if(!cmds[i].inputFile.empty()) {
+                int fd = open(cmds[i].inputFile.c_str(), O_RDONLY);
+                if(fd == -1) {
+                    perror(cmds[i].inputFile.c_str());
+                    exit(1);
+                }
+                dup2(fd, STDIN_FILENO);
+                close(fd);
             }
-            if(i < numCmds - 1) {
+            else if(i > 0) {
+                dup2(pipes[i-1][0], STDIN_FILENO);
+            }
+            // STDOUT SETUP
+            if(!cmds[i].outputFile.empty()) {
+                int fd = open(cmds[i].outputFile.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if(fd == -1) {
+                    perror(cmds[i].outputFile.c_str());
+                    exit(1);
+                }
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+            else if( i < numCmds - 1) {
                 dup2(pipes[i][1], STDOUT_FILENO);
             }
+
+
             for(auto& p : pipes) {
                 close(p[0]);
                 close(p[1]);
             }
 
             std::vector<char*> cArgs;
-            for(auto& cmd : cmds[i]) {
+            for(auto& cmd : cmds[i].args) {
                 cArgs.push_back(const_cast<char*>(cmd.c_str()));
             }
             cArgs.push_back(nullptr);
@@ -132,9 +155,9 @@ void Shell::run() {
     while(true) {
         std::string input = readInput();
         if(input.empty()) continue;
-        std::vector<std::vector<std::string>> cmds = parseInput(input);
+        std::vector<Command> cmds = parseInput(input);
         if(cmds.empty()) continue;
-        if(cmds.size() == 1 && isBuiltin(cmds[0][0])) handleBuiltin(cmds[0]);
+        if(cmds.size() == 1 && isBuiltin(cmds[0].args[0])) handleBuiltin(cmds[0].args);
         else executePipeline(cmds);
     }
 }
