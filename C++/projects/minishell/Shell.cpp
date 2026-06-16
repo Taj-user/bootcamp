@@ -5,10 +5,13 @@
 #include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
+#include <csignal>
 #include <fcntl.h>
 // #include <cerrno>                    // use for more precise error handling
 #include <sys/wait.h>
 #include <sys/types.h>
+
+volatile bool childRunning = false;
 
 bool Shell::isBuiltin(const std::string& cmd) const {
 	return cmd == "cd" || cmd ==  "exit" || cmd == "pwd";
@@ -16,8 +19,12 @@ bool Shell::isBuiltin(const std::string& cmd) const {
 
 std::string Shell::readInput() const {
 	std::string input;
-	std::cout << "> ";
+	std::cout << "> " << std::flush;
 	std::getline(std::cin, input);
+	if(std::cin.fail() || std::cin.eof()) {
+		std::cin.clear();
+		return "";
+	}
 	return input;
 }
 
@@ -86,13 +93,16 @@ void Shell::executePipeline(std::vector<Command>& cmds) {
     }
 
     std::vector<pid_t> childPids;
+    childRunning = true;
     for(int i = 0; i < numCmds; i++) {
         pid_t pid = fork();
         if(pid < 0) {
             perror("fork");
+            childRunning = false;
             return;
         }
         else if(pid == 0) {
+            signal(SIGINT, SIG_DFL);
             // STDIN SETUP
             if(!cmds[i].inputFile.empty()) {
                 int fd = open(cmds[i].inputFile.c_str(), O_RDONLY);
@@ -149,9 +159,17 @@ void Shell::executePipeline(std::vector<Command>& cmds) {
         int status;
         waitpid(pid, &status, 0);
     }
+    childRunning = false;
+}
+
+// helper function
+void sigintHandler([[maybe_unused]] int sig) {
+    if(!childRunning)
+        write(STDOUT_FILENO, "\n", 1);
 }
 
 void Shell::run() {
+    signal(SIGINT, sigintHandler);
     while(true) {
         std::string input = readInput();
         if(input.empty()) continue;
