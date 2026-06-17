@@ -41,7 +41,20 @@ char* my_strcat(char* dest, char* src) {
 }
 
 // Custom strcmp
-
+int my_strcmp(const char* str1, const char* str2) {
+	if(str1 && str2 == NULL) return -1;
+	int str1_ascii = 0;
+	int str2_ascii = 0;
+	size_t str1_len = my_strlen(str1);
+	size_t str2_len = my_strlen(str2);
+	for(size_t i = 0; i < str1_len; i++) {
+		str1_ascii += (int)(*(str1 + i));
+	}
+	for(size_t i = 0; i < str2_len; i++) {
+		str2_ascii += (int)(*(str2 + i));
+	}
+	return str1_ascii - str2_ascii;
+}
 
 // // Timer
 // long long now_microseconds() {
@@ -71,9 +84,10 @@ int main(void) {
 	char bread[] = "Bread";
 	char butter[] = " Butter";
 
-	my_strcat(bread, butter);
-
-	printf("%s", bread);
+	int cmp = my_strcmp(bread, butter);
+	if(cmp > 0) printf("%s", bread);
+	else if(cmp < 0) printf("%s", butter);
+	else printf("Both strings equal\n");
 
 	return 0;
 }

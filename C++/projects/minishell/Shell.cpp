@@ -19,7 +19,9 @@ bool Shell::isBuiltin(const std::string& cmd) const {
 
 std::string Shell::readInput() const {
 	std::string input;
-	std::cout << "> " << std::flush;
+	char cwd[1024];
+    if(getcwd(cwd, sizeof(cwd))) std::cout << cwd << "> " << std::flush;
+    else std::cout << "> " << std::flush;
 	std::getline(std::cin, input);
 	if(std::cin.fail() || std::cin.eof()) {
 		std::cin.clear();

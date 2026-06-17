@@ -3,9 +3,16 @@
 #include <vector>
 
 struct Command {
+    enum class RedirectionType {
+        NONE,
+        TRUNCATE,
+        APPEND,
+    };
+
     std::vector<std::string> args;
     std::string inputFile;                  // empty = no input redirection
     std::string outputFile;                 // empty = no output redirection
+    RedirectionType redirectionType = RedirectionType::NONE;
 };
 
 class Shell {
