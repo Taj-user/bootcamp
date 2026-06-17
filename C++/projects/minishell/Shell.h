@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <deque>
 
 struct Command {
     enum class RedirectionType {
@@ -23,4 +24,7 @@ class Shell {
 		void executePipeline(std::vector<Command>& cmds);
 		void handleBuiltin(std::vector<std::string>& args);
 		bool isBuiltin(const std::string& cmd) const;
+	private:
+        std::deque<std::string> cmdHistory;
+        size_t maxHistorySize = 20;
 };

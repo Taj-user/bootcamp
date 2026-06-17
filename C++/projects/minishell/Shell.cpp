@@ -1,5 +1,6 @@
 #include "Shell.h"
 #include <iostream>
+#include <iomanip>
 #include <array>
 #include <sstream>
 #include <unistd.h>
@@ -14,7 +15,7 @@
 volatile bool childRunning = false;
 
 bool Shell::isBuiltin(const std::string& cmd) const {
-	return cmd == "cd" || cmd ==  "exit" || cmd == "pwd";
+	return cmd == "cd" || cmd ==  "exit" || cmd == "pwd" || cmd == "history";
 }
 
 std::string Shell::readInput() const {
@@ -84,6 +85,12 @@ void Shell::handleBuiltin(std::vector<std::string>& args) {
     else if(args.front() == "pwd") {
         char cwd[1024];
         if(getcwd(cwd, sizeof(cwd))) std::cout << cwd << "\n";
+        return;
+    }
+    else if(args.front() == "history") {
+        for(size_t i = 0; i < cmdHistory.size(); i++) {
+            std::cout << std::setw(4) << (i + 1) << " " << cmdHistory[i] << "\n";
+        }
         return;
     }
 }
@@ -182,6 +189,8 @@ void Shell::run() {
     while(true) {
         std::string input = readInput();
         if(input.empty()) continue;
+        if(cmdHistory.size() >= maxHistorySize) cmdHistory.pop_front();
+        cmdHistory.push_back(input);
         std::vector<Command> cmds = parseInput(input);
         if(cmds.empty()) continue;
         if(cmds.size() == 1 && isBuiltin(cmds[0].args[0])) handleBuiltin(cmds[0].args);
