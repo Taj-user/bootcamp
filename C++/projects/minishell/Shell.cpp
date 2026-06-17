@@ -43,10 +43,16 @@ std::vector<Command> Shell::parseInput(const std::string& input) const {
 
 	    Command cmd;
 	    for(size_t i = 0; i < tokens.size(); i++) {
-	        if((tokens[i] == ">" || tokens[i] == "<") && i + 1 < tokens.size()) {
+	        if((tokens[i] == ">" || tokens[i] == ">>" || tokens[i] == "<") && i + 1 < tokens.size()) {
 	            if(tokens[i] == ">") {
+	                cmd.redirectionType = Command::RedirectionType::TRUNCATE;
                     cmd.outputFile = tokens[i + 1];
                     i++;
+	            }
+	            else if(tokens[i] == ">>") {
+	                cmd.redirectionType = Command::RedirectionType::APPEND;
+	                cmd.outputFile = tokens[i + 1];
+	                i++;
 	            }
 	            else {
 	                cmd.inputFile = tokens[i + 1];
@@ -120,7 +126,9 @@ void Shell::executePipeline(std::vector<Command>& cmds) {
             }
             // STDOUT SETUP
             if(!cmds[i].outputFile.empty()) {
-                int fd = open(cmds[i].outputFile.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                int flags = O_WRONLY | O_CREAT;
+                flags |= (cmds[i].redirectionType == Command::RedirectionType::APPEND) ? O_APPEND : O_TRUNC;
+                int fd = open(cmds[i].outputFile.c_str(), flags, 0644);
                 if(fd == -1) {
                     perror(cmds[i].outputFile.c_str());
                     exit(1);
@@ -131,7 +139,6 @@ void Shell::executePipeline(std::vector<Command>& cmds) {
             else if( i < numCmds - 1) {
                 dup2(pipes[i][1], STDOUT_FILENO);
             }
-
 
             for(auto& p : pipes) {
                 close(p[0]);
