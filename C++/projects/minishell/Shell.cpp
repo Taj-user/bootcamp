@@ -19,16 +19,77 @@ bool Shell::isBuiltin(const std::string& cmd) const {
 }
 
 std::string Shell::readInput() const {
-	std::string input;
 	char cwd[1024];
     if(getcwd(cwd, sizeof(cwd))) std::cout << cwd << "> " << std::flush;
     else std::cout << "> " << std::flush;
-	std::getline(std::cin, input);
-	if(std::cin.fail() || std::cin.eof()) {
-		std::cin.clear();
-		return "";
-	}
-	return input;
+
+    RawModeGuard guard;
+    std::string buffer;
+    size_t historyIndex = cmdHistory.size();
+
+    char c;
+    while(true) {
+        ssize_t bytesRead = read(STDIN_FILENO, &c, 1);
+        if(bytesRead <= 0) return "";
+        if(c == '\r' || c == '\n') {
+            std::cout << "\n" << std::flush;
+            return buffer;
+        }
+        else if(c == 0x7F) {
+            if(!buffer.empty()) {
+                buffer.pop_back();
+                std::cout << "\b \b" << std::flush;
+            }
+        }
+        else if(c == 0x1B) {
+            char seq1, seq2;
+            ssize_t bytesRead1 = read(STDIN_FILENO, &seq1, 1);
+            if(bytesRead1 <= 0) return "";
+            ssize_t bytesRead2 = read(STDIN_FILENO, &seq2, 1);
+            if(bytesRead2 <= 0) return "";
+
+            if(seq1 == '[' && (seq2 == 'A' || seq2 == 'B')) {
+                if(seq2 == 'A') {
+                    bool changed = false;
+                    if(historyIndex == cmdHistory.size() && !cmdHistory.empty()) {
+                        historyIndex = cmdHistory.size() - 1;
+                        changed = true;
+                    }
+                    else if(historyIndex > 0) {
+                        historyIndex--;
+                        changed = true;
+                    }
+                    if(changed) {
+                        if(buffer.length() > 0) std::cout << "\x1b[" << buffer.length() << "D";
+                        std::cout << "\x1b[K" << std::flush;
+                        std::string recalledCommand = cmdHistory[historyIndex];
+                        std::cout << recalledCommand << std::flush;
+                        buffer = recalledCommand;
+                    }
+                }
+                else if(seq2 == 'B'){
+                    if(historyIndex < cmdHistory.size() - 1) {
+                        historyIndex++;
+                        if(buffer.length() > 0) std::cout << "\x1b[" << buffer.length() << "D";
+                        std::cout << "\x1b[K" << std::flush;
+                        std::string recalledCommand = cmdHistory[historyIndex];
+                        std::cout << recalledCommand << std::flush;
+                        buffer = recalledCommand;
+                    }
+                    else if(historyIndex == cmdHistory.size() - 1) {
+                        historyIndex = cmdHistory.size();
+                        if(buffer.length() > 0) std::cout << "\x1b[" << buffer.length() << "D";
+                        std::cout << "\x1b[K" << std::flush;
+                        buffer = "";
+                    }
+                }
+            }
+        }
+        else {
+            buffer += c;
+            std::cout << c << std::flush;
+        }
+    }
 }
 
 std::vector<Command> Shell::parseInput(const std::string& input) const {
@@ -196,4 +257,15 @@ void Shell::run() {
         if(cmds.size() == 1 && isBuiltin(cmds[0].args[0])) handleBuiltin(cmds[0].args);
         else executePipeline(cmds);
     }
+}
+
+RawModeGuard::RawModeGuard() {
+    if(tcgetattr(STDIN_FILENO, &oldSettings) == -1) perror("tcgetattr");
+    struct termios newSettings = oldSettings;
+    newSettings.c_lflag &= ~(ICANON | ECHO);
+    if(tcsetattr(STDIN_FILENO, TCSANOW, &newSettings) == -1) perror("tcsetattr");
+}
+
+RawModeGuard::~RawModeGuard() {
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldSettings);
 }

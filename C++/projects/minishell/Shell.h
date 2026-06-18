@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <termios.h>
 
 struct Command {
     enum class RedirectionType {
@@ -27,4 +28,12 @@ class Shell {
 	private:
         std::deque<std::string> cmdHistory;
         size_t maxHistorySize = 20;
+};
+
+class RawModeGuard {
+    public:
+        RawModeGuard();
+        ~RawModeGuard();
+    private:
+        struct termios oldSettings;
 };
