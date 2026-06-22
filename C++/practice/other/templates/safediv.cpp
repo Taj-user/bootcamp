@@ -1,6 +1,26 @@
 #include <iostream>
+#include <concepts>
 #include <type_traits>
 
+// concepts
+template<typename T>
+concept Divisible = requires(T a, T b) {
+    a / b;
+};
+
+template<typename T>
+T safeDivide2(T num1, T num2) {
+    std::cerr << "Division not supported for this type\n";
+    return T{};
+}
+
+template<typename T>
+requires Divisible<T>
+T safeDivide2(T num1, T num2) {
+    return num1 / num2;
+}
+
+// sfinae
 template<typename T>
 T safeDivide(T num1, T num2) {
     if constexpr(std::is_floating_point_v<T>) {
