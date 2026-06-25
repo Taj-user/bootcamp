@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+#include <cstddef>
+#include <stdexcept>
 #include <utility>
 
 template<typename T>
@@ -43,8 +44,54 @@ class Vector {
                         }
                 }
 
-                T& operator[](const size_t index) {
-                        // TODO: Finish
+                T& operator[](const size_t index) {                                                             // for vec[index]
+                        if(index > m_size) throw std::out_of_range("Index out of range");
+                        return *(m_data + index);
+                }
+
+                const T& operator[](const size_t index) const {
+                        if(index > m_size) throw std::out_of_range("Index out of range");
+                        return *(m_data + index);
+                }
+
+                size_t size() const {
+                        return m_size;
+                }
+
+                size_t capacity() const {
+                        return m_capacity;
+                }
+
+                class Iterator {
+                        public:
+                                Iterator(T* i)
+                                        : current(i)
+                                {}
+
+                                void operator++() {
+                                        current++;
+                                }
+
+                                bool operator!=(Iterator iterator) {
+                                        return current != iterator.current;
+                                }
+
+                                T& operator*() {
+                                        return *current;
+                                }
+
+                        private:
+                                T* current;
+                };
+
+                Iterator begin() {                                                                              // iterator to the first element
+                        Iterator it(m_data + 0);
+                        return it;
+                }
+
+                Iterator end() {                                                                                // iterator to one position after the last element
+                        Iterator it(m_data + m_size);
+                        return it;
                 }
 
         private:
