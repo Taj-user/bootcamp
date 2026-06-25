@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <initializer_list>
 #include <stdexcept>
 #include <utility>
 
@@ -11,6 +12,10 @@ class Vector {
                         , m_size(0)
                         , m_capacity(0)
                 {}
+
+                Vector(std::initializer_list<T> list) {
+                        for(const T& value : list) push_back(value);
+                }
 
                 ~Vector() {
                         for(size_t i = m_size; i > 0; --i) {
