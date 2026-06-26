@@ -13,8 +13,68 @@ class Vector {
                         , m_capacity(0)
                 {}
 
-                Vector(std::initializer_list<T> list) {
+                Vector(std::initializer_list<T> list)
+                        : m_data(nullptr)
+                        , m_size(0)
+                        , m_capacity(0)
+                {
                         for(const T& value : list) push_back(value);
+                }
+
+                Vector(const Vector& source)
+                        : m_data(nullptr)
+                        , m_size(0)
+                        , m_capacity(source.capacity())
+                {
+                        m_data = static_cast<T*>(::operator new(m_capacity * sizeof(T)));
+                        for(const T& value : source) {
+                                push_back(value);
+                        }
+                }
+
+                Vector& operator=(const Vector& source) {
+                        if(this == &source) return *this;
+                        for(size_t i = m_size; i > 0; --i) {
+                                m_data[i - 1].~T();
+                        }
+                        ::operator delete(m_data);
+
+                        m_size = 0;
+                        m_capacity = source.capacity();
+                        m_data = static_cast<T*>(::operator new(m_capacity * sizeof(T)));
+
+                        for(const T& value : source) {
+                                push_back(value);
+                        }
+                        return *this;
+                }
+
+                Vector(Vector&& source)
+                        : m_data(source.m_data)
+                        , m_size(source.m_size)
+                        , m_capacity(source.m_capacity)
+                {
+                        source.m_data = nullptr;
+                        source.m_size = 0;
+                        source.m_capacity = 0;
+                }
+
+                Vector& operator=(Vector&& source) {
+                        if(this == &source) return *this;
+                        for(size_t i = m_size; i > 0; --i) {
+                                m_data[i - 1].~T();
+                        }
+                        ::operator delete(m_data);
+
+                        m_data = source.m_data;
+                        m_size = source.m_size;
+                        m_capacity = source.m_capacity;
+
+                        source.m_data = nullptr;
+                        source.m_size = 0;
+                        source.m_capacity = 0;
+
+                        return *this;
                 }
 
                 ~Vector() {
@@ -47,6 +107,12 @@ class Vector {
                                 new(m_data + m_size) T(value);                                                  // construct new element
                                 m_size++;
                         }
+                }
+
+                void pop_back() {
+                        if(m_size == 0) throw std::out_of_range("No elements in vector to pop");
+                        m_data[m_size - 1].~T();
+                        m_size--;
                 }
 
                 T& operator[](const size_t index) {                                                             // for vec[index]
@@ -95,6 +161,16 @@ class Vector {
                 }
 
                 Iterator end() {                                                                                // iterator to one position after the last element
+                        Iterator it(m_data + m_size);
+                        return it;
+                }
+
+                Iterator begin() const {
+                        Iterator it(m_data + 0);
+                        return it;
+                }
+
+                Iterator end() const {
                         Iterator it(m_data + m_size);
                         return it;
                 }
