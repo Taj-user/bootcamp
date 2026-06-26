@@ -1,7 +1,9 @@
+#include "Stack.hpp"
 #include "Vector.hpp"
 
 int main(void) {
-        Vector<int> vec {1, 2, 3, 4, 5};
+        Vector<int> vec;
+        Stack<int> stack;
         // Testing
         return 0;
 }
