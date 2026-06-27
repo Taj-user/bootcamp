@@ -1,9 +1,18 @@
 #pragma once
+#include <initializer_list>
 #include "Vector.hpp"
 
 template<typename T>
 class Stack {
         public:
+                Stack()
+                        : vec()
+                {}
+
+                Stack(std::initializer_list<T> list)
+                        : vec(list)
+                {}
+
                 void push(T value) {
                         vec.push_back(value);
                 }

@@ -4,6 +4,14 @@
 template<typename T>
 class Queue {
         public:
+                Queue()
+                        : ll()
+                {}
+
+                Queue(std::initializer_list<T> list) 
+                        : ll(list)
+                {}
+
                 void enqueue(T value) {
                         ll.push_back(value);
                 }

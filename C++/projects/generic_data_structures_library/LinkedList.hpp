@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <initializer_list>
 #include <stdexcept>
 
 template<typename T>
@@ -14,6 +15,13 @@ class LinkedList {
                         : head(nullptr)
                         , tail(nullptr)
                 {}
+
+                LinkedList(std::initializer_list<T> list)
+                        : head(nullptr)
+                        , tail(nullptr)
+                {
+                        for(const T& value : list) push_back(value);
+                }
 
                 LinkedList(const LinkedList& source)
                         : head(nullptr)
