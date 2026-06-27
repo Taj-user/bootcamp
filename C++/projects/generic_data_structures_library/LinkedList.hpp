@@ -1,3 +1,4 @@
+#pragma once
 #include <cstddef>
 #include <stdexcept>
 
@@ -101,7 +102,7 @@ class LinkedList {
                         return head->data;
                 }
 
-                size_t size() {
+                size_t size() const {
                         if(head == nullptr && tail == nullptr) return 0;
                         size_t count = 1;
                         Node* i = head;
@@ -112,7 +113,7 @@ class LinkedList {
                         return count;
                 }
 
-                bool empty() {
+                bool empty() const {
                         return head == nullptr && tail == nullptr;
                 }
 
