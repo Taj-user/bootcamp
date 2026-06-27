@@ -1,6 +1,8 @@
 #include <cstddef>
 #include <stdexcept>
 
+// TODO: Copy constructor, Copy assignment, Move constructor, Move assignment
+
 template<typename T>
 class LinkedList {
         public:
@@ -8,6 +10,13 @@ class LinkedList {
                         : head(nullptr)
                         , tail(nullptr)
                 {}
+
+                LinkedList(const LinkedList& source) {
+                        Node* n  = new Node;
+                        while(source) {
+                                // write rest of copy constructor
+                        }
+                }
 
                 ~LinkedList() {
                         while(!empty()) {
