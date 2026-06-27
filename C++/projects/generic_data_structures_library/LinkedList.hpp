@@ -1,8 +1,6 @@
 #include <cstddef>
 #include <stdexcept>
 
-// TODO: Copy constructor, Copy assignment, Move constructor, Move assignment
-
 template<typename T>
 class LinkedList {
         public:
