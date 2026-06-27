@@ -11,11 +11,48 @@ class LinkedList {
                         , tail(nullptr)
                 {}
 
-                LinkedList(const LinkedList& source) {
-                        Node* n  = new Node;
-                        while(source) {
-                                // write rest of copy constructor
+                LinkedList(const LinkedList& source)
+                        : head(nullptr)
+                        , tail(nullptr)
+                {
+                        Node* temp = source.head;
+                        while(temp != nullptr) {
+                                push_back(temp->data);
+                                temp = temp->next;
                         }
+                }
+
+                LinkedList& operator=(const LinkedList& source) {
+                        if(this == &source) return *this;
+                        while(!empty()) {
+                                pop_front();
+                        }
+                        Node* temp = source.head;
+                        while(temp != nullptr) {
+                                push_back(temp->data);
+                                temp = temp->next;
+                        }
+                        return *this;
+                }
+
+                LinkedList(LinkedList&& source)
+                        : head(source.head)
+                        , tail(source.tail)
+                {
+                        source.head = nullptr;
+                        source.tail = nullptr;
+                }
+
+                LinkedList& operator=(LinkedList&& source) {
+                        if(this == &source) return *this;
+                        while(!empty()) {
+                                pop_front();
+                        }
+                        head = source.head;
+                        tail = source.tail;
+                        source.head = nullptr;
+                        source.tail = nullptr;
+                        return *this;
                 }
 
                 ~LinkedList() {
