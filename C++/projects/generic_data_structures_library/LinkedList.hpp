@@ -4,6 +4,11 @@
 
 template<typename T>
 class LinkedList {
+        struct Node {
+                T data;
+                Node* next;
+        };
+
         public:
                 LinkedList()
                         : head(nullptr)
@@ -117,11 +122,49 @@ class LinkedList {
                         return head == nullptr && tail == nullptr;
                 }
 
-        private:
-                struct Node {
-                        T data;
-                        Node* next;
+                class Iterator {
+                        public:
+                                Iterator(Node* n)
+                                        : current(n)
+                                {}
+
+                                void operator++() {
+                                        current = current->next;
+                                }
+
+                                bool operator!=(Iterator iterator) {
+                                        return current != iterator.current;
+                                }
+
+                                T& operator*() {
+                                        return current->data;
+                                }
+
+                        private:
+                                Node* current;
                 };
+
+                Iterator begin() {
+                        Iterator it(head);
+                        return it;
+                }
+
+                Iterator end() {
+                        Iterator it(nullptr);
+                        return it;
+                }
+
+                Iterator begin() const {
+                        Iterator it(head);
+                        return it;
+                }
+
+                Iterator end() const {
+                        Iterator it(nullptr);
+                        return it;
+                }
+
+        private:
                 Node* head;
                 Node* tail;
 };
