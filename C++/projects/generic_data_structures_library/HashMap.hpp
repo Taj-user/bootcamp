@@ -31,16 +31,7 @@ class HashMap {
                                 if(key == k) return v;
                         }
                         bucket[index].push_back({key, V{}});
-                        return bucket[index].back().second;
-                }
-
-                const V& operator[](const K& key) const {
-                        std::hash<K> hasher;
-                        size_t index = hasher(key) % bucket.size();
-                        for(auto& [k, v] : bucket[index]) {
-                                if(key == k) return v;
-                        }
-                        bucket[index].push_back({key, V{}});
+                        m_size++;
                         return bucket[index].back().second;
                 }
 
