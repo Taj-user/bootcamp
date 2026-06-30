@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -77,10 +78,54 @@ class World {
 class PhysicsSystem {
         public:
                 void update(World& world) {
-                        for(size_t i = 0; i < world.get_positions().size(); i++) {
-                                world.get_positions().at(i).x += world.get_velocities().at(i).dx;
-                                world.get_positions().at(i).y += world.get_velocities().at(i).dy;
+                        for(auto& [entity, position] : world.get_positions()) {
+                                if(world.get_velocities().count(entity) == 1) {
+                                        position.x += world.get_velocities().at(entity).dx;
+                                        position.y += world.get_velocities().at(entity).dy;
+                                }
                         }
                 }
 };
 
+class HealthSystem {
+        public:
+                void update(World& world) {
+                        for(auto& [entity, health] : world.get_healths()) {
+                                if(health.current <= 0) std::cout << "Entity " << entity << " died\n";
+                        }
+                }
+};
+
+int main(void) {
+        World world;
+        Position p(2, 4);
+        Position pt(1, 1);
+        Health h(20, 100);
+        Health ht(0, 200);
+        Velocity v(8, 3);
+
+        Entity player = world.create_entity();
+        Entity target = world.create_entity();
+
+        world.add_position(player, p);
+        world.add_health(player, h);
+        world.add_velocity(player, v);
+        world.add_position(target, pt);
+        world.add_health(target, ht);
+
+        std::unordered_map<Entity, Position> p_before = world.get_positions();
+        for(const auto& [entity, position] : p_before) {
+                std::cout << position.x << " " << position.y << "\n";
+        }
+
+        PhysicsSystem ps;
+        HealthSystem hs;
+        ps.update(world);
+        hs.update(world);
+
+        std::unordered_map<Entity, Position> p_after= world.get_positions();
+        for(const auto& [entity, position] : p_after) {
+                std::cout << position.x << " " << position.y << "\n";
+        }
+        return 0;
+}
