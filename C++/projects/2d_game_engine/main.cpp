@@ -20,10 +20,19 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
                 return 1;
         }
 
+        SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        if(renderer == nullptr) {
+                std::cerr << "SDL_CreateRenderer failed: " << SDL_GetError() << "\n";
+                SDL_DestroyWindow(window);
+                SDL_Quit();
+                return 1;
+        }
+
         bool running = true;
         double accumulator {0.0};
         Uint32 previous_time = SDL_GetTicks();
         double FIXED_TIMESTAMP = 16.6666;
+        SDL_Rect rectangle = { 100, 100, 200, 150 };
 
         while(running) {
                 Uint32 current_time = SDL_GetTicks();
@@ -38,9 +47,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
                         // update(FIXED_TIMESTAMP);
                         accumulator -= FIXED_TIMESTAMP;
                 }
-                // render();
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderClear(renderer);
+                SDL_SetRenderDrawColor(renderer, 128, 20, 128, 255);
+                SDL_RenderFillRect(renderer, &rectangle);
+                SDL_RenderPresent(renderer);
         }
 
+        SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
         return 0;
