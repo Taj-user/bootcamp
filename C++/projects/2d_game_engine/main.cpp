@@ -8,7 +8,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
         }
 
         SDL_Window* window = SDL_CreateWindow(
-                        "SDL2 Test",
+                        "engine",
                         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                         800, 600,
                         SDL_WINDOW_SHOWN
