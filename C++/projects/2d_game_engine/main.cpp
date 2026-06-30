@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include "World.hpp"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
         if(SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -28,11 +29,21 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
                 return 1;
         }
 
+        World world;
+        Entity square = world.create_entity();
+        PhysicsSystem physics;
+
+        Position p_square(600, 400);
+        Velocity v_square(0, -1);
+
+        world.add_position(square, p_square);
+        world.add_velocity(square, v_square);
+
         bool running = true;
         double accumulator {0.0};
         Uint32 previous_time = SDL_GetTicks();
         double FIXED_TIMESTAMP = 16.6666;
-        SDL_Rect rectangle = { 100, 100, 200, 150 };
+        SDL_Rect rectangle = { 0, 0, 200, 200 };
 
         while(running) {
                 Uint32 current_time = SDL_GetTicks();
@@ -44,9 +55,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
                         if(event.type == SDL_QUIT) running = false;
                 }
                 while(accumulator >= FIXED_TIMESTAMP) {
-                        // update(FIXED_TIMESTAMP);
+                        physics.update(world);
                         accumulator -= FIXED_TIMESTAMP;
                 }
+                rectangle.x = world.get_positions().at(square).x;
+                rectangle.y = world.get_positions().at(square).y;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
                 SDL_SetRenderDrawColor(renderer, 128, 20, 128, 255);
