@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL2/SDL.h>
+#include "Collision.hpp"
 #include "World.hpp"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
