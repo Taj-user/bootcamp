@@ -33,8 +33,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
         Entity square = world.create_entity();
         PhysicsSystem physics;
 
-        Position p_square(600, 400);
-        Velocity v_square(0, -1);
+        Position p_square(400, 300);
+        Velocity v_square(0, 0);
 
         world.add_position(square, p_square);
         world.add_velocity(square, v_square);
@@ -53,6 +53,28 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
                 SDL_Event event;
                 while(SDL_PollEvent(&event)) {
                         if(event.type == SDL_QUIT) running = false;
+                        if(event.type == SDL_KEYDOWN) {
+                                switch(event.key.keysym.sym) {
+                                        case SDLK_ESCAPE:
+                                                running = false;
+                                                break;
+                                }
+                        }
+                }
+                world.get_velocities().at(square).dx = 0;
+                world.get_velocities().at(square).dy = 0;
+                const Uint8* keys = SDL_GetKeyboardState(nullptr);
+                if(keys[SDL_SCANCODE_UP]) {                                                             // up arrow key
+                        world.get_velocities().at(square).dy = -1;
+                }
+                if(keys[SDL_SCANCODE_DOWN]) {                                                           // down arrow key
+                        world.get_velocities().at(square).dy = 1;
+                }
+                if(keys[SDL_SCANCODE_LEFT]) {                                                           // left arrow key
+                        world.get_velocities().at(square).dx = -1;
+                }
+                if(keys[SDL_SCANCODE_RIGHT]) {                                                          // right arrow key
+                        world.get_velocities().at(square).dx = 1;
                 }
                 while(accumulator >= FIXED_TIMESTAMP) {
                         physics.update(world);
