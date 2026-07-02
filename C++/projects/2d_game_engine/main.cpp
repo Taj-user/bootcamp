@@ -117,5 +117,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
+
         return 0;
 }
