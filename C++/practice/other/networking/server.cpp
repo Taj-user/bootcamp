@@ -1,6 +1,21 @@
+#include <thread>
 #include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+
+bool send_all(SOCKET fd, const char* buffer, int length);
+
+void handleClient(SOCKET clientfd) {
+        char buffer[1024];
+        int bytes = recv(clientfd, buffer, sizeof(buffer) - 1, 0);
+        buffer[bytes] = '\0';
+        std::cout << buffer << "\n";
+
+        const char* response = "Message received";
+        send_all(clientfd, response, static_cast<int>(strlen(response)));
+
+        closesocket(clientfd);
+}
 
 bool send_all(SOCKET fd, const char* buffer, int length) {
         int total = 0;
@@ -16,8 +31,8 @@ int main(void) {
         WSADATA wsaData;
         WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        if(sockfd == -1) return -1;
+        SOCKET sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if(sockfd == INVALID_SOCKET) return -1;
 
         struct sockaddr_in addr;
         addr.sin_family         = AF_INET;
@@ -39,21 +54,16 @@ int main(void) {
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
 
-        int clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &client_len);
-        if(clientfd == -1) {
-                closesocket(sockfd);
-                return -1;
+        while(true) {
+                SOCKET clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &client_len);
+                if(clientfd == INVALID_SOCKET) {
+                        closesocket(sockfd);
+                        return -1;
+                }
+                std::thread t(handleClient, clientfd);
+                t.detach();
         }
 
-        char buffer[1024];
-        int bytes = recv(clientfd, buffer, sizeof(buffer) - 1, 0);
-        buffer[bytes] = '\0';
-        std::cout << buffer << "\n";
-
-        const char* response = "Message received";
-        send_all(clientfd, response, static_cast<int>(strlen(response)));
-
-        closesocket(clientfd);
         closesocket(sockfd);
 
         WSACleanup();

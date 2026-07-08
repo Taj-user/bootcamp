@@ -16,8 +16,8 @@ int main(void) {
         WSADATA wsaData;
         WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        if(sockfd == -1) return -1;
+        SOCKET sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if(sockfd == INVALID_SOCKET) return -1;
 
         struct sockaddr_in addr;
         addr.sin_family         = AF_INET;
