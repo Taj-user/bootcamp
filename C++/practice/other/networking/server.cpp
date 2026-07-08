@@ -7,12 +7,13 @@ bool send_all(SOCKET fd, const char* buffer, int length);
 
 void handleClient(SOCKET clientfd) {
         char buffer[1024];
-        int bytes = recv(clientfd, buffer, sizeof(buffer) - 1, 0);
-        buffer[bytes] = '\0';
-        std::cout << buffer << "\n";
-
-        const char* response = "Message received";
-        send_all(clientfd, response, static_cast<int>(strlen(response)));
+        int recvfd {};
+        while((recvfd = recv(clientfd, buffer, sizeof(buffer) - 1, 0)) > 0) {
+                buffer[recvfd] = '\0';
+                std::cout << buffer << "\n";
+                const char* response = "Message received";
+                send_all(clientfd, response, static_cast<int>(strlen(response)));
+        }
 
         closesocket(clientfd);
 }

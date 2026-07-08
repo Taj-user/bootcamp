@@ -29,13 +29,16 @@ int main(void) {
                 return -1;
         }
 
-        const char* msg = "Hello world from client";
-        send_all(sockfd, msg, static_cast<int>(strlen(msg)));
+        for(int i = 0; i < 3; i++) {
+                const char* msg = "Hello world from client.";
+                send_all(sockfd, msg, static_cast<int>(strlen(msg)));
 
-        char buffer[1024];
-        int bytes = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-        buffer[bytes] = '\0';
-        std::cout << buffer << "\n";
+                char buffer[1024];
+                int bytes = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+                buffer[bytes] = '\0';
+                std::cout << buffer << "\n";
+        }
+
 
         closesocket(sockfd);
 
