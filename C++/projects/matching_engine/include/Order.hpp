@@ -16,9 +16,9 @@ namespace OrderFlags {
 }
 
 struct Order {
-        u64 order_id;
-        u8 side = OrderFlags::BUY;
-        double price;
-        u32 quantity;
-        SOCKET client;
+        u64     order_id;
+        u8      side = OrderFlags::BUY;
+        double  price;
+        u32     quantity;
+        SOCKET  client;
 };

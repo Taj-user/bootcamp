@@ -1,5 +1,6 @@
 #include "../include/MatchingEngine.hpp"
 #include "../include/OrderBook.hpp"
+#include <chrono>
 
 int main(void) {
         OrderBook book;
@@ -21,8 +22,7 @@ int main(void) {
         engine.submit_order(o1);
         engine.submit_order(o2);
 
-        engine.process_orders();
-        engine.process_orders();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         return 0;
 }
