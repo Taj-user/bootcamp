@@ -19,7 +19,7 @@ void OrderBook::match_orders() {
         while(!m_bids.empty() && !m_asks.empty() && best_bid->first >= best_ask->first) {
                 match_qty = std::min(best_bid->second.front().quantity, best_ask->second.front().quantity);
 
-                std::cout << match_qty << " shares at " << best_ask->first <<
+                std::cout << match_qty << " shares at $" << best_ask->first <<
                         " | BID order_id=" << best_bid->second.front().order_id << " | ASK order_id=" << best_ask->second.front().order_id << "\n";
 
                 best_bid->second.front().quantity -= match_qty;
