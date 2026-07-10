@@ -25,7 +25,6 @@ Server::Server(MatchingEngine& engine, int port)
                 closesocket(m_socketfd);
                 return;
         }
-
 }
 
 Server::~Server() {

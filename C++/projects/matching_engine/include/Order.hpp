@@ -3,10 +3,6 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-typedef uint8_t u8;
-typedef uint32_t u32;
-typedef uint64_t u64;
-
 namespace OrderFlags {
         constexpr u8 BUY        = 1 << 0;
         constexpr u8 LIMIT      = 1 << 1;
@@ -21,4 +17,13 @@ struct Order {
         SOCKET  client;
         u32     quantity;
         u8      side = OrderFlags::BUY;
+};
+
+struct MatchResult {
+        u64     bid_order_id;
+        u64     ask_order_id;
+        double  price;
+        SOCKET  bid_client;
+        SOCKET  ask_client;
+        u32     match_qty;
 };

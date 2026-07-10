@@ -6,7 +6,7 @@
 class OrderBook {
         public:
                 void add_order(const Order& order);
-                void match_orders();
+                std::vector<MatchResult> match_orders();
 
         private:
                 std::map<double, std::queue<Order>, std::greater<double>>       m_bids;
