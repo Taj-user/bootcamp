@@ -1,5 +1,6 @@
 #include "../include/Order.hpp"
 #include "../include/utils.hpp"
+#include <iostream>
 
 int main(void) {
         WSADATA wsaData;
@@ -33,6 +34,14 @@ int main(void) {
 
         send_all(sockfd, reinterpret_cast<char*>(&o1), sizeof(o1));
         send_all(sockfd, reinterpret_cast<char*>(&o2), sizeof(o2));
+
+        MatchResult result;
+        int recvfd {};
+        while((recvfd = recv(sockfd, reinterpret_cast<char*>(&result), sizeof(result), 0)) > 0) {
+                std::cout << "ORDER FILLED: " << result.match_qty << "shares at " << result.price
+                        << " | bid_order_id=" << result.bid_order_id
+                        << " | ask_order_id=" << result.ask_order_id << "\n";
+        }
 
         closesocket(sockfd);
 
