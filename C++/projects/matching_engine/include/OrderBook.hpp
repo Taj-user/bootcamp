@@ -2,6 +2,7 @@
 #include "Order.hpp"
 #include <map>
 #include <queue>
+#include <vector>
 
 class OrderBook {
         public:

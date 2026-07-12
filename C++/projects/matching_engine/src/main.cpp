@@ -13,3 +13,23 @@ int main(void) {
 
         return 0;
 }
+
+// Summary of known issues
+/*
+        Critical (data race):
+                → RingBuffer push/pop not thread safe
+
+        High (reliability):
+                → Server constructor fails silently
+                → Detached threads outlive Server
+
+        Medium (performance):
+                → Busy-wait loop in MatchingEngine
+                → double as map key for prices
+
+        Low (design):
+                → SOCKET in domain objects
+                → std::cout in OrderBook
+                → process_orders() is public
+                → Missing includes in headers
+*/

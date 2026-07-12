@@ -1,6 +1,7 @@
 #pragma once
 #include "OrderBook.hpp"
 #include "RingBuffer.hpp"
+#include <atomic>
 #include <thread>
 
 class MatchingEngine {

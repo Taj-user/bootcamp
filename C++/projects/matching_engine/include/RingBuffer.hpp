@@ -55,3 +55,6 @@ requires (N > 0 && (N & (N - 1)) == 0)
 size_t RingBuffer<T, N>::size() const {
         return count;
 }
+
+// Cosider using std::atomic<size_t> for head tail and count to avoid race conditions. Also std::mutex to protect push and pop
+// Add a pop for move only types: pop(T&& value)

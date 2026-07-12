@@ -53,3 +53,8 @@ void Server::run() {
                 t.detach();
         }
 }
+
+// constructor failure is silent
+// run() has to exit condition
+// naming confusion for the return values of bind() and listen()
+// detached threads outlive the server if its destroyed while client threads are still running

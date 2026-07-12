@@ -43,3 +43,6 @@ std::vector<MatchResult> OrderBook::match_orders() {
         }
         return match_results;
 }
+
+// match_orders() shouldnt know about output. Caller should decide how to display it
+// double as map key is dangerous
