@@ -10,6 +10,6 @@ class OrderBook {
                 std::vector<MatchResult> match_orders();
 
         private:
-                std::map<double, std::queue<Order>, std::greater<double>>       m_bids;
-                std::map<double, std::queue<Order>>                             m_asks;
+                std::map<int64_t, std::queue<Order>, std::greater<double>>       m_bids;
+                std::map<int64_t, std::queue<Order>>                             m_asks;
 };

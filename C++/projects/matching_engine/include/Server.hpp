@@ -10,9 +10,10 @@ class Server {
                 void run();
 
         private:
-                ClientRegistry          m_registry;
-                MatchingEngine&         m_engine;
-                SOCKET                  m_socketfd;
-                std::atomic<bool>       m_running;
-                std::thread             m_worker;
+                ClientRegistry                  m_registry;
+                MatchingEngine&                 m_engine;
+                SOCKET                          m_socketfd;
+                std::atomic<bool>               m_running;
+                std::thread                     m_worker;
+                std::vector<std::thread>        m_threads;
 };
