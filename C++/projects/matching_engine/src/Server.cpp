@@ -1,7 +1,10 @@
 #include "../include/Server.hpp"
+#include "../include/utils.hpp"
 
 Server::Server(MatchingEngine& engine, int port)
-        : m_engine (engine)
+        : m_engine      (engine)
+        , m_running     (true)
+        , m_worker      (&Server::dispatch_results, this)
 {
         WSADATA wsaData;
         WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -28,8 +31,23 @@ Server::Server(MatchingEngine& engine, int port)
 }
 
 Server::~Server() {
+        m_running = false;
+        m_worker.join();
         closesocket(m_socketfd);
         WSACleanup();
+}
+
+void Server::dispatch_results() {
+        while(m_running) {
+                MatchResult result;
+                m_engine.pop_result(result);
+                SOCKET bid_socket = m_registry.lookup(result.bid_order_id);
+                SOCKET ask_socket = m_registry.lookup(result.ask_order_id);
+                send_all(bid_socket, reinterpret_cast<char*>(&result), sizeof(result));
+                send_all(ask_socket, reinterpret_cast<char*>(&result), sizeof(result));
+                m_registry.unbind(result.bid_order_id);
+                m_registry.unbind(result.ask_order_id);
+        }
 }
 
 void Server::run() {

@@ -12,16 +12,19 @@ MatchingEngine::~MatchingEngine() {
         m_worker.join();
 }
 
+bool MatchingEngine::pop_result(MatchResult& result) {
+                bool status = m_result_queue.pop(result);
+                return status;
+}
+
 void MatchingEngine::process_orders() {
         while(m_running) {
                 Order order;
-                std::vector<MatchResult> match_vec;
                 if(m_ring_buffer.pop(order)) {
                         m_book.add_order(order);
-                        match_vec = m_book.match_orders();
+                        auto match_vec = m_book.match_orders();
                         for(const auto& match : match_vec) {
-                                send_all(match.bid_client, reinterpret_cast<const char*>(&match), sizeof(match));
-                                send_all(match.ask_client, reinterpret_cast<const char*>(&match), sizeof(match));
+                                m_result_queue.push(match);
                         }
                 }
         }
