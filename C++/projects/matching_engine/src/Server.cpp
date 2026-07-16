@@ -5,10 +5,9 @@
 Server::Server(MatchingEngine& engine, int port)
         : m_engine      (engine)
         , m_running     (true)
-        , m_worker      (&Server::dispatch_results, this)
 {
         WSADATA wsaData;
-        WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) throw std::runtime_error("WSAStartup() failed");
 
         m_socketfd = socket(AF_INET, SOCK_STREAM, 0);
         if(m_socketfd == INVALID_SOCKET) throw std::runtime_error("socket() failed");
@@ -29,15 +28,18 @@ Server::Server(MatchingEngine& engine, int port)
                 closesocket(m_socketfd);
                 throw std::runtime_error("listen() failed");
         }
+        m_run = std::thread(&Server::run, this);
+        m_worker = std::thread(&Server::dispatch_results, this);
 }
 
 Server::~Server() {
         m_running = false;
+        closesocket(m_socketfd);
+        m_run.join();
         m_worker.join();
         for(auto& t : m_threads) {
                 if(t.joinable()) t.join();
         }
-        closesocket(m_socketfd);
         WSACleanup();
 }
 
@@ -78,8 +80,3 @@ void Server::run() {
                 m_threads.push_back(std::move(t));
         }
 }
-
-// constructor failure is silent
-// run() has to exit condition
-// naming confusion for the return values of bind() and listen()
-// detached threads outlive the server if its destroyed while client threads are still running

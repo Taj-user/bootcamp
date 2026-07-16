@@ -22,5 +22,3 @@ struct MatchResult {
         double  price;
         u32     match_qty;
 };
-
-// Architectural comprimise by storing SOCKET inside Order. Should be pure order data next time. Same for MatcResult

@@ -1,5 +1,4 @@
 #include "../include/MatchingEngine.hpp"
-#include "../include/utils.hpp"
 
 MatchingEngine::MatchingEngine(OrderBook& book)
         : m_book        (book)
@@ -33,7 +32,3 @@ void MatchingEngine::process_orders() {
 void MatchingEngine::submit_order(const Order& order) {
         m_ring_buffer.push(order);
 }
-
-// process_orders spins continuously
-// submit_order has a data race
-// process_orders should be private
