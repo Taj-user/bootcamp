@@ -1,5 +1,6 @@
 #pragma once
 #include "Types.hpp"
+#include <string>
 
 struct OrderGeneratorConfig {
         u64             num_orders;
@@ -8,6 +9,8 @@ struct OrderGeneratorConfig {
         double          buy_probability;
         u32             min_quantity;
         u32             max_quantity;
+        u32             orders_per_second;
+        std::string     server_ip;
         unsigned int    seed;
-     // std::chrono::microseconds delay -> time it should take for order to reach the server(could implement later)
+        u16             server_port;
 };

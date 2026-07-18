@@ -1,6 +1,7 @@
 #pragma once
 #include "Order.hpp"
 #include "OrderGeneratorConfig.hpp"
+#include "TcpClient.hpp"
 #include <random>
 
 class OrderGenerator {
@@ -11,5 +12,6 @@ class OrderGenerator {
         private:
                 Order generate_order();
                 OrderGeneratorConfig m_config;
+                TcpClient m_tcp;
                 std::mt19937 m_rng;
 };

@@ -51,4 +51,6 @@ int main(void) {
         client.run();
 
         WSACleanup();
+
+        return 0;
 }

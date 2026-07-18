@@ -80,3 +80,13 @@ void Server::run() {
                 m_threads.push_back(std::move(t));
         }
 }
+
+int main(void) {
+        OrderBook book;
+        MatchingEngine engine(book);
+        Server server(engine, 8080);
+
+        std::cin.get();                 // block until Enter is pressed. Or define a signal handler
+
+        return 0;
+}
