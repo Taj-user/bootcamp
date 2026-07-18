@@ -1,5 +1,6 @@
 #include "../include/Order.hpp"
 #include "../include/utils.hpp"
+#include <iomanip>
 #include <iostream>
 
 int main(void) {
@@ -38,7 +39,8 @@ int main(void) {
         MatchResult result;
         int recvfd {};
         while((recvfd = recv(sockfd, reinterpret_cast<char*>(&result), sizeof(result), 0)) > 0) {
-                std::cout << "ORDER FILLED: " << result.match_qty << "shares at " << result.price
+                std::cout << std::fixed << std::setprecision(2);
+                std::cout << "ORDER FILLED: " << result.match_qty << " shares at " << to_price_double(result.price)
                         << " | bid_order_id=" << result.bid_order_id
                         << " | ask_order_id=" << result.ask_order_id << "\n";
         }

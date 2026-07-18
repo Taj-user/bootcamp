@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Types.hpp"
 
 namespace OrderFlags {
         constexpr u8 BUY        = 1 << 0;
@@ -19,6 +19,6 @@ struct Order {
 struct MatchResult {
         u64     bid_order_id;
         u64     ask_order_id;
-        double  price;
+        Price   price;
         u32     match_qty;
 };

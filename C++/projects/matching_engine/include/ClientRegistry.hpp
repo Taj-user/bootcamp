@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Types.hpp"
 #include <unordered_map>
 #include <winsock2.h>
 #include <ws2tcpip.h>

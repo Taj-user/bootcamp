@@ -1,12 +1,13 @@
 #include "../include/OrderBook.hpp"
+#include "../include/utils.hpp"
 #include <algorithm>
 
 void OrderBook::add_order(const Order& order) {
         if((order.side & OrderFlags::BUY) != 0) {
-                m_bids[(order.price) * 100].push(order);
+                m_bids[to_price_int(order.price)].push(order);
         }
         else {
-                m_asks[(order.price) * 100].push(order);
+                m_asks[to_price_int(order.price)].push(order);
         }
 }
 
@@ -22,7 +23,7 @@ std::vector<MatchResult> OrderBook::match_orders() {
                 MatchResult result;
                 result.bid_order_id     = best_bid->second.front().order_id;
                 result.ask_order_id     = best_ask->second.front().order_id;
-                result.price            = static_cast<double>(best_ask->first) / 100.0;
+                result.price            = (best_ask->first);
                 result.match_qty        = match_qty;
                 match_results.push_back(result);
 
