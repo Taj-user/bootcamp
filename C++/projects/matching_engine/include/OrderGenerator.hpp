@@ -1,3 +1,4 @@
+#pragma once
 #include "Order.hpp"
 #include "OrderGeneratorConfig.hpp"
 #include <random>

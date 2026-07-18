@@ -25,5 +25,8 @@ Order OrderGenerator::generate_order() {
 }
 
 void OrderGenerator::run() {
-
+        for(u64 i = 0; i < m_config.num_orders; i++) {
+                Order order = generate_order();
+                // TODO: serialize and send order, consider wrapping the networking layer in its own class
+        }
 }
