@@ -51,8 +51,8 @@ void Server::dispatch_results() {
                 SOCKET ask_socket = m_registry.lookup(result.ask_order_id);
                 send_all(bid_socket, reinterpret_cast<char*>(&result), sizeof(result));
                 send_all(ask_socket, reinterpret_cast<char*>(&result), sizeof(result));
-                m_registry.unbind(result.bid_order_id);
-                m_registry.unbind(result.ask_order_id);
+                if(result.bid_complete) m_registry.unbind(result.bid_order_id);
+                if(result.ask_complete) m_registry.unbind(result.ask_order_id);
                 std::cout << result.match_qty << " shares at $" << result.price
                         << " | BID=" << result.bid_order_id
                         << " | ASK=" << result.ask_order_id << "\n";

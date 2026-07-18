@@ -18,7 +18,8 @@ Order OrderGenerator::generate_order() {
         std::bernoulli_distribution distrib(m_config.buy_probability);
         bool random_side = distrib(m_rng);
 
-        Order order;
+        Order order {};
+        order.order_id = m_next_order_id++;
         order.price = random_price;
         order.quantity = random_quantity;
         if(random_side) order.side |= OrderFlags::BUY;

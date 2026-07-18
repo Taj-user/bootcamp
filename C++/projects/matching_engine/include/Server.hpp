@@ -14,7 +14,7 @@ class Server {
                 MatchingEngine&                 m_engine;
                 SOCKET                          m_socketfd;
                 std::atomic<bool>               m_running;
-                std::thread                      m_run;
+                std::thread                     m_run;
                 std::thread                     m_worker;
                 std::vector<std::thread>        m_threads;
 };

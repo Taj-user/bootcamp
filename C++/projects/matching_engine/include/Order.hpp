@@ -21,4 +21,6 @@ struct MatchResult {
         u64     ask_order_id;
         Price   price;
         u32     match_qty;
+        bool    bid_complete;
+        bool    ask_complete;
 };
