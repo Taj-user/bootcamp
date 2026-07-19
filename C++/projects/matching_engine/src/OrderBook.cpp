@@ -1,6 +1,7 @@
 #include "../include/OrderBook.hpp"
 #include "../include/utils.hpp"
 #include <algorithm>
+#include <cassert>
 
 void OrderBook::add_order(const Order& order) {
         if((order.side & OrderFlags::BUY) != 0) {
@@ -22,6 +23,7 @@ std::vector<MatchResult> OrderBook::match_orders() {
                 if(best_bid->first < best_ask->first) break;
 
                 match_qty = std::min(best_bid->second.front().quantity, best_ask->second.front().quantity);
+                assert(match_qty > 0);
 
                 best_bid->second.front().quantity -= match_qty;
                 best_ask->second.front().quantity -= match_qty;

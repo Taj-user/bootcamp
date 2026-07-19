@@ -13,8 +13,8 @@ class MatchingEngine {
 
         private:
                 OrderBook&                      m_book;
-                RingBuffer<MatchResult, 64>     m_result_queue;
-                RingBuffer<Order, 64>           m_ring_buffer;
+                RingBuffer<MatchResult, 4096>     m_result_queue;
+                RingBuffer<Order, 4096>           m_ring_buffer;
                 std::atomic<bool>               m_running;
                 std::thread                     m_worker;
                 void process_orders();
