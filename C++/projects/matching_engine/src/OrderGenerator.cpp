@@ -46,7 +46,7 @@ void OrderGenerator::run() {
         for(u64 i = 0; i < m_config.num_orders; i++) {
                 Order order = generate_order();
                 if(!m_tcp.send_order(order)) break;
-                if(++sent % 10000 == 0) std::cout << "Sent: " << sent << "\n";                           // debug
+                ++sent;
                 if(m_config.orders_per_second > 0) std::this_thread::sleep_for(std::chrono::duration<double>(1.0 / m_config.orders_per_second));
         }
         m_tcp.disconnect();
@@ -54,10 +54,14 @@ void OrderGenerator::run() {
 
         auto us = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
 
-        std::cout << "sent: " << sent
-                << " matches: " << m_matches_received
-                << " elapsed: " << us
-                << "\n";
+        std::chrono::duration<double> seconds = us;
+        double orders_per_sec = static_cast<double>(m_config.num_orders) / seconds.count();
+
+        std::cout << "sent: " << sent << " | "                                                                          // number of orders send by generator
+                << "matches: " << m_matches_received << " | "                                                           // matches made by the server
+                << "elapsed: " << us << "/" << std::fixed << std::setprecision(1) << seconds.count() << "s | "     // time taken to send all orders(in us and s)
+                << "throughput: " << std::fixed << std::setprecision(1) << orders_per_sec << "orders/sec"           // number of orders per second
+                << "\n";                                                                                                // new line character
 }
 
 int main(void) {
