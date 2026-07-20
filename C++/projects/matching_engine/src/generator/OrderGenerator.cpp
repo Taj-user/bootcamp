@@ -1,4 +1,4 @@
-#include "../include/OrderGenerator.hpp"
+#include "../../include/generator/OrderGenerator.hpp"
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -55,12 +55,12 @@ void OrderGenerator::run() {
         auto us = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
 
         std::chrono::duration<double> seconds = us;
-        double orders_per_sec = static_cast<double>(m_config.num_orders) / seconds.count();
+        int orders_per_sec = m_config.num_orders / seconds.count();
 
         std::cout << "sent: " << sent << " | "                                                                          // number of orders send by generator
                 << "matches: " << m_matches_received << " | "                                                           // matches made by the server
-                << "elapsed: " << us << "/" << std::fixed << std::setprecision(1) << seconds.count() << "s | "     // time taken to send all orders(in us and s)
-                << "throughput: " << std::fixed << std::setprecision(1) << orders_per_sec << "orders/sec"           // number of orders per second
+                << "elapsed: " << us << "/" << std::fixed << std::setprecision(1) << seconds.count() << "s | "       // time taken to send all orders(in us and s)
+                << "throughput: " << orders_per_sec << "orders/sec"                                                     // number of orders per second
                 << "\n";                                                                                                // new line character
 }
 

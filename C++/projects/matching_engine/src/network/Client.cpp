@@ -1,5 +1,5 @@
-#include "../include/Client.hpp"
-#include "../include/utils.hpp"
+#include "../../include/network/Client.hpp"
+#include "../../include/common/utils.hpp"
 #include <iomanip>
 #include <iostream>
 

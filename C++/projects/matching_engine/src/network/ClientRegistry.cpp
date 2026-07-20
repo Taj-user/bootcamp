@@ -1,4 +1,4 @@
-#include "../include/ClientRegistry.hpp"
+#include "../../include/network/ClientRegistry.hpp"
 #include <iostream>
 
 void ClientRegistry::bind(u64 order_id, SOCKET client) {

@@ -1,6 +1,6 @@
 #pragma once
-#include "Order.hpp"
-#include "Types.hpp"
+#include "../engine/Order.hpp"
+#include "../common/Types.hpp"
 #include <winsock2.h>
 #include <ws2tcpip.h>
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.hpp"
+#include "../common/Types.hpp"
 #include <mutex>
 #include <unordered_map>
 #include <winsock2.h>

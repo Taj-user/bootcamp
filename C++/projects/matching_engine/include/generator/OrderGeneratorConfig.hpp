@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.hpp"
+#include "../common/Types.hpp"
 #include <string>
 
 struct OrderGeneratorConfig {

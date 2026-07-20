@@ -1,7 +1,7 @@
 #pragma once
-#include "Order.hpp"
+#include "../engine/Order.hpp"
 #include "OrderGeneratorConfig.hpp"
-#include "TcpClient.hpp"
+#include "../network/TcpClient.hpp"
 #include <atomic>
 #include <random>
 

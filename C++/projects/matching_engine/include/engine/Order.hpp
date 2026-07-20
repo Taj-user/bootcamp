@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.hpp"
+#include "../common/Types.hpp"
 
 namespace OrderFlags {
         constexpr u8 BUY        = 1 << 0;

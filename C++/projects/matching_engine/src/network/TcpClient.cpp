@@ -1,5 +1,5 @@
-#include "../include/TcpClient.hpp"
-#include "../include/utils.hpp"
+#include "../../include/network/TcpClient.hpp"
+#include "../../include/common/utils.hpp"
 
 TcpClient::~TcpClient() {
         disconnect();

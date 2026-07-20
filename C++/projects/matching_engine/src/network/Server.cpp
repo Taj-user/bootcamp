@@ -1,5 +1,5 @@
-#include "../include/Server.hpp"
-#include "../include/utils.hpp"
+#include "../../include/network/Server.hpp"
+#include "../../include/common/utils.hpp"
 #include <iostream>
 
 Server::Server(MatchingEngine& engine, int port)
