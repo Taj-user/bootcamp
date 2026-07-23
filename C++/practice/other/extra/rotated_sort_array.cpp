@@ -12,7 +12,7 @@ int search_rotated_sort_array(std::vector<int>& vec, int target) {
                         if(target >= vec[left] && target < vec[mid]) right = mid;
                         else left = mid + 1;
                 }
-                else if(vec[left] > vec[mid]) {
+                else {
                         if(target > vec[mid] && target <= vec[right]) left = mid + 1;
                         else right = mid;
                 }
